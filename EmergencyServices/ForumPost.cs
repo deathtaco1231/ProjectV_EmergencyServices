@@ -31,5 +31,10 @@ namespace EmergencyServices.Group8
         {
             return Id.ToString() + "," + createdAt.ToString() + "," + userName + "," + postHeader + "," + postBody;
         }
+
+        public void CreatePost(string name, string postHead, string body)
+        {
+
+        }
     }
 }

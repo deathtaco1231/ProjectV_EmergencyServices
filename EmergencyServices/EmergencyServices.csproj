@@ -270,6 +270,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DotEnv.cs" />
+    <Compile Include="EmergencyBackend.cs" />
     <Compile Include="ForumPost.cs" />
     <Compile Include="NotifiedUser.cs" />
     <Compile Include="ProcessedDisaster.cs" />

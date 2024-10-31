@@ -362,7 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /EmergencyServices/DotNetEnv.dll
-/EmergencyServices/EmergencyServices.csproj
 /EmergencyServices/EmergencyServices.exe
 /EmergencyServices/EmergencyServices.exe.config
 /EmergencyServices/Microsoft.Bcl.AsyncInterfaces.dll

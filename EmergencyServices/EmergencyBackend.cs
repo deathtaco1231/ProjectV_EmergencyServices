@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmergencyServices
+namespace EmergencyServices.Group8
 {
     public static class EmergencyBackend
     {

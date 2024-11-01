@@ -1,8 +1,11 @@
 ﻿using System;
 using Postgrest.Models;
 using Postgrest.Attributes;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
-namespace EmergencyServices
+[assembly: InternalsVisibleTo("Group8_Tests"), InternalsVisibleTo("EmergencyServices_Group8_Tests")]
+namespace EmergencyServices.Group8
 {
     [Table("testing")]
     internal class Testing : BaseModel

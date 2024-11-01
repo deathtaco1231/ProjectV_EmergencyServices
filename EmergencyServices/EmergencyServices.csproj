@@ -269,6 +269,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisasterTypeEnums.cs" />
     <Compile Include="DotEnv.cs" />
     <Compile Include="EmergencyBackend.cs" />
     <Compile Include="ForumPost.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="ProcessedDisaster.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Testing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".env">

@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace EmergencyServices_Group8_Tests
 {
     [TestClass]
-    public class UnitTest1
+    public class IntegrationTests
     {
         //[TestInitialize]
         //public void SetUp()

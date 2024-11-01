@@ -32,14 +32,13 @@ namespace EmergencyServices.Group8 // Likely will just be used for testing since
                 }
             }
 
-            //var model = new ForumPost
-            //{
-            //    userName = "Test Insert User Name",
-            //    postHeader = "Test Insert Post Header",
-            //    postBody = "Test Insert Post Body",
-            //    createdAt = DateTime.Now
-            //};
-            //await supabase.From<ForumPost>().Insert(model);
+            var model = new ForumPost
+            {
+                userName = "Test Insert User Name",
+                postHeader = "Test Insert Post Header",
+                postBody = "Test Insert Post Body",
+            };
+            await EmergencyBackend.supabase.From<ForumPost>().Insert(model);
             Console.Read();
         }
     }

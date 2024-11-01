@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("EmergencyServices_Group8_Tests")]
 namespace EmergencyServices.Group8
 {
-    [Table("testing")]
+    [Table("testing")] // Table for testing only
     internal class Testing : BaseModel
     {
         [PrimaryKey("id")]

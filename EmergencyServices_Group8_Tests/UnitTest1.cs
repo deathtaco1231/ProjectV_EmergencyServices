@@ -4,6 +4,8 @@ using Postgrest.Attributes;
 using System.Reflection;
 using EmergencyServices.Group8;
 using System;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace EmergencyServices_Group8_Tests
 {
@@ -17,9 +19,11 @@ namespace EmergencyServices_Group8_Tests
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public async Task TestMethod1()
         {
-            var stuff = EmergencyBackend.supabase.From<Testing>().Get();
+            var res = await EmergencyBackend.supabase.From<Testing>().Get();
+            var stuff = res.Models;
+            Assert.IsTrue(stuff.Count > 0);
         }
     }
 }

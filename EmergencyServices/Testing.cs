@@ -4,7 +4,7 @@ using Postgrest.Attributes;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Group8_Tests"), InternalsVisibleTo("EmergencyServices_Group8_Tests")]
+[assembly: InternalsVisibleTo("EmergencyServices_Group8_Tests")]
 namespace EmergencyServices.Group8
 {
     [Table("testing")]
@@ -14,8 +14,8 @@ namespace EmergencyServices.Group8
         public int Id { get; set; }
 
         [Column("created_at")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        //public DateTime CreatedAt { get => CreatedAt; set { CreatedAt = DateTime.Now; } }
+        public DateTime CreatedAt { get; set; } = DateTime.Now; // Proper
+        //public DateTime CreatedAt { get => CreatedAt; set { CreatedAt = DateTime.Now; } } // Does Not Work; Stack Overflow
 
         [Column("test_string")]
         public string TestString { get; set; }

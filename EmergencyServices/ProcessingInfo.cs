@@ -1,10 +1,11 @@
-﻿using Postgrest.Attributes;
+﻿using Postgrest.Models;
+using Postgrest.Attributes;
 using System;
 
 namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in ticket 107
 {
     [Table("disaster_emergency_data")]
-    internal class ProcessingInfo
+    internal class ProcessingInfo : BaseModel
     {
         [PrimaryKey("id")]
         public int Id { get; set; }

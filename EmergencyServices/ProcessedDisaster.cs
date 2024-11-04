@@ -1,10 +1,11 @@
-﻿using Postgrest.Attributes;
+﻿using Postgrest.Models;
+using Postgrest.Attributes;
 using System;
 
 namespace EmergencyServices.Group8
 {
     [Table("testing")]
-    public class ProcessedDisaster
+    public class ProcessedDisaster : BaseModel
     {
         [PrimaryKey("id")]
         public int Id { get; set; }

@@ -10,6 +10,7 @@ namespace EmergencyServices.Group8
 {
     internal static class BackendHelper
     {
+        public static List<ProcessingInfo> DisasterProcessingInfo;
         public static Notification JsonToNotification(string json)
         {
             dynamic jsonContents = JObject.Parse(json);
@@ -23,9 +24,23 @@ namespace EmergencyServices.Group8
             newNotif.Source = jsonContents.Source;
             return newNotif;
         }
+
         public static string ProcessedDisasterToJson(ProcessedDisaster p)
         {
             return JsonConvert.SerializeObject(p);
+        }
+
+        public static async Task<bool> PopulateProcessingInfoList()
+        {
+            DisasterProcessingInfo = new List<ProcessingInfo>();
+            var res = await EmergencyBackend.supabase.From<ProcessingInfo>().Get();
+            var models = res.Models;
+            if (models.Count == 0) 
+                return false;
+            foreach (ProcessingInfo p in models) {
+                DisasterProcessingInfo.Add(p);
+            }
+            return true;
         }
     }
 }

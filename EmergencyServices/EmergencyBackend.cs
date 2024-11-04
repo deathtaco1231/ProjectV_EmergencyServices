@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace EmergencyServices.Group8
 {
@@ -18,6 +19,12 @@ namespace EmergencyServices.Group8
 
             supabase = new Supabase.Client(url, key, options);
             await supabase.InitializeAsync();
+
+            if (await BackendHelper.PopulateProcessingInfoList() == false)
+            {
+                Debug.WriteLine("ERROR: Failed to retrieve disaster processing data OR table was empty!"); // Change to console call if not in visual studio debug mode
+                Environment.Exit(-1);
+            }  
         }
 
         public static ProcessedDisaster ProcessNotification(string notifJson)

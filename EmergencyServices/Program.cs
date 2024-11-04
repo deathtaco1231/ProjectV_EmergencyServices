@@ -1,24 +1,16 @@
 ﻿//#define TESTING
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
-namespace EmergencyServices.Group8 // Likely will just be used for testing since all functionality will be in static class and methods and main will be in group 7's module
+namespace EmergencyServices.Group8 
 {
-    internal class Program
+    internal class Program // Likely will just be used for testing since all functionality will be in static class and methods and main will be in group 7's module
     {
         static async Task Main(string[] args)
         {
             EmergencyBackend.Init();
-
-            //var model = new Testing
-            //{
-            //    TestString = "hem low"
-            //};
-            //await EmergencyBackend.supabase.From<Testing>().Insert(model);
 
             var result = await EmergencyBackend.supabase.From<Testing>().Get();
             var strings = result.Models;
@@ -32,13 +24,25 @@ namespace EmergencyServices.Group8 // Likely will just be used for testing since
                 }
             }
 
-            //var model = new ForumPost
-            //{
-            //    userName = "Test Insert User Name",
-            //    postHeader = "Test Insert Post Header",
-            //    postBody = "Test Insert Post Body",
-            //};
-            //await EmergencyBackend.supabase.From<ForumPost>().Insert(model);
+            ProcessedDisaster test = new ProcessedDisaster();
+            test.Id = 1;
+            test.DisasterType = "type here";
+            test.Priority = "priority";
+            test.DuringDisasterSteps = "during steps";
+            test.RecoverySteps = "recovery here";
+            test.PrecautionSteps = "precaution here";
+            test.Source = "source";
+            test.Description = "description";
+            test.SeverityLevel = 15.5;
+            string jsonTest = JsonConvert.SerializeObject(test);
+
+            dynamic jsonContents = JObject.Parse(jsonTest);
+            ProcessedDisaster newDisaster = new ProcessedDisaster();
+            newDisaster.Id = jsonContents.Id;
+            newDisaster.DisasterType = jsonContents.DisasterType;
+            newDisaster.Priority = jsonContents.Priority;
+            // so on and so forth
+
             Console.Read();
         }
     }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace EmergencyServices.Group8
 {
@@ -22,6 +19,20 @@ namespace EmergencyServices.Group8
 
             supabase = new Supabase.Client(url, key, options);
             await supabase.InitializeAsync();
+
+            if (await BackendHelper.PopulateProcessingInfoList() == false)
+            {
+                Debug.WriteLine("ERROR: Failed to retrieve disaster processing data OR table was empty!"); // Change to console call if not in visual studio debug mode
+                Environment.Exit(-1);
+            }  
+        }
+
+        public static ProcessedDisaster ProcessNotification(string notifJson)
+        {
+            if (notifJson == null)
+                return null;
+            Notification notif = BackendHelper.JsonToNotification(notifJson);
+            return /*Call to function Aidan is making here which processes notification into ProcessedDisaster*/ null; // REMOVE NULL LATER
         }
     }
 }

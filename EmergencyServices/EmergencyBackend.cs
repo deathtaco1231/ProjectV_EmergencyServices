@@ -34,5 +34,22 @@ namespace EmergencyServices.Group8
             Notification notif = BackendHelper.JsonToNotification(notifJson);
             return /*Call to function Aidan is making here which processes notification into ProcessedDisaster*/ null; // REMOVE NULL LATER
         }
+
+        private static ProcessedDisaster ConvertToProcessedDisaster(Notification notif)
+        {
+            return new ProcessedDisaster
+            {
+                Id = notif.Id,
+                DisasterType = notif.DisasterType,
+                Priority = notif.Priority,
+                Description = notif.Description,
+                PrecautionSteps = "Default Precaution Steps", 
+                DuringDisasterSteps = "Default Disaster Steps", 
+                RecoverySteps = "Default Recovery Steps", 
+                Timestamp = notif.Timestamp,
+                SeverityLevel = notif.SeverityLevel ?? 0, 
+                Source = notif.Source
+            };
+        }
     }
 }

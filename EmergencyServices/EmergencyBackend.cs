@@ -40,128 +40,128 @@ namespace EmergencyServices.Group8
             return /*Call to function Aidan is making here which processes notification into ProcessedDisaster*/ null; // REMOVE NULL LATER
         }
 
-        public static async Task LoadPdfContentToSupabase(string pdfFilePath)
-        {
-            var disasterEntries = ParsePdfForDisasters(pdfFilePath);
+        //public static async Task LoadPdfContentToSupabase(string pdfFilePath)
+        //{
+        //    var disasterEntries = ParsePdfForDisasters(pdfFilePath);
 
-            if (EmergencyBackend.supabase == null)
-            {
-                EmergencyBackend.Init();
-            }
+        //    if (EmergencyBackend.supabase == null)
+        //    {
+        //        EmergencyBackend.Init();
+        //    }
 
-            foreach (var entry in disasterEntries)
-            {
-                var response = await EmergencyBackend.supabase
-                    .From<ProcessingInfo>()
-                    .Insert(entry);
+        //    foreach (var entry in disasterEntries)
+        //    {
+        //        var response = await EmergencyBackend.supabase
+        //            .From<ProcessingInfo>()
+        //            .Insert(entry);
 
-                if (response.Models == null)
-                {
-                    Console.WriteLine("Error inserting entry");
-                }
-                else
-                {
-                    Console.WriteLine("Disaster entry added successfully.");
-                }
-            }
+        //        if (response.Models == null)
+        //        {
+        //            Console.WriteLine("Error inserting entry");
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("Disaster entry added successfully.");
+        //        }
+        //    }
 
-        }
+        //}
 
-        internal static List<ProcessingInfo> ParsePdfForDisasters(string pdfFilePath)
-        {
-            List<ProcessingInfo> disasters = new List<ProcessingInfo>();
-            string currentDisasterType = string.Empty;
-            string precautionSteps = string.Empty;
-            string duringDisasterSteps = string.Empty;
-            string recoverySteps = string.Empty;
+        //internal static List<ProcessingInfo> ParsePdfForDisasters(string pdfFilePath)
+        //{
+        //    List<ProcessingInfo> disasters = new List<ProcessingInfo>();
+        //    string currentDisasterType = string.Empty;
+        //    string precautionSteps = string.Empty;
+        //    string duringDisasterSteps = string.Empty;
+        //    string recoverySteps = string.Empty;
 
-            using (PdfReader reader = new PdfReader(pdfFilePath))
-            {
-                for (int page = 1; page <= reader.NumberOfPages; page++)
-                {
-                    string pageText = PdfTextExtractor.GetTextFromPage(reader, page);
-                    var lines = pageText.Split('\n');
+        //    using (PdfReader reader = new PdfReader(pdfFilePath))
+        //    {
+        //        for (int page = 1; page <= reader.NumberOfPages; page++)
+        //        {
+        //            string pageText = PdfTextExtractor.GetTextFromPage(reader, page);
+        //            var lines = pageText.Split('\n');
 
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        var line = lines[i];
+        //            for (int i = 0; i < lines.Length; i++)
+        //            {
+        //                var line = lines[i];
 
-                        if (line.StartsWith("- "))
-                        {
-                            if (currentDisasterType != null)
-                            {
-                                disasters.Add(new ProcessingInfo
-                                {
-                                    DisasterType = currentDisasterType,
-                                    PrecautionSteps = precautionSteps,
-                                    DuringDisasterSteps = duringDisasterSteps,
-                                    RecoverySteps = recoverySteps,
-                                    Timestamp = DateTime.Now
-                                });
+        //                if (line.StartsWith("- "))
+        //                {
+        //                    if (currentDisasterType != null)
+        //                    {
+        //                        disasters.Add(new ProcessingInfo
+        //                        {
+        //                            DisasterType = currentDisasterType,
+        //                            PrecautionSteps = precautionSteps,
+        //                            DuringDisasterSteps = duringDisasterSteps,
+        //                            RecoverySteps = recoverySteps,
+        //                            Timestamp = DateTime.Now
+        //                        });
 
-                                precautionSteps = string.Empty;
-                                duringDisasterSteps = string.Empty;
-                                recoverySteps = string.Empty;
-                            }
+        //                        precautionSteps = string.Empty;
+        //                        duringDisasterSteps = string.Empty;
+        //                        recoverySteps = string.Empty;
+        //                    }
 
-                            currentDisasterType = line.TrimStart('-').Trim();
-                        }
-                        else if (line.Contains("Precaution Steps"))
-                        {
-                            precautionSteps = CollectSection(lines, ref i, "Precaution Steps");
-                        }
-                        else if (line.Contains("In the event of"))
-                        {
-                            duringDisasterSteps = CollectSection(lines, ref i, "In the event of");
-                        }
-                        else if (line.Contains("Recovery Steps"))
-                        {
-                            recoverySteps = CollectSection(lines, ref i, "Recovery Steps");
-                        }
-                    }
-                }
+        //                    currentDisasterType = line.TrimStart('-').Trim();
+        //                }
+        //                else if (line.Contains("Precaution Steps"))
+        //                {
+        //                    precautionSteps = CollectSection(lines, ref i, "Precaution Steps");
+        //                }
+        //                else if (line.Contains("In the event of"))
+        //                {
+        //                    duringDisasterSteps = CollectSection(lines, ref i, "In the event of");
+        //                }
+        //                else if (line.Contains("Recovery Steps"))
+        //                {
+        //                    recoverySteps = CollectSection(lines, ref i, "Recovery Steps");
+        //                }
+        //            }
+        //        }
 
-                if (currentDisasterType != null)
-                {
-                    disasters.Add(new ProcessingInfo
-                    {
-                        DisasterType = currentDisasterType,
-                        PrecautionSteps = precautionSteps,
-                        DuringDisasterSteps = duringDisasterSteps,
-                        RecoverySteps = recoverySteps,
-                        Timestamp = DateTime.Now
-                    });
-                }
-            }
+        //        if (currentDisasterType != null)
+        //        {
+        //            disasters.Add(new ProcessingInfo
+        //            {
+        //                DisasterType = currentDisasterType,
+        //                PrecautionSteps = precautionSteps,
+        //                DuringDisasterSteps = duringDisasterSteps,
+        //                RecoverySteps = recoverySteps,
+        //                Timestamp = DateTime.Now
+        //            });
+        //        }
+        //    }
 
-            return disasters;
-        }
+        //    return disasters;
+        //}
 
-        private static string CollectSection(string[] lines, ref int index, string sectionHeader)
-        {
-            var sectionText = new List<string>();
-            bool collecting = false;
+        //private static string CollectSection(string[] lines, ref int index, string sectionHeader)
+        //{
+        //    var sectionText = new List<string>();
+        //    bool collecting = false;
 
-            for (; index < lines.Length; index++)
-            {
-                var line = lines[index];
+        //    for (; index < lines.Length; index++)
+        //    {
+        //        var line = lines[index];
 
-                if (collecting)
-                {
-                    if (line.StartsWith("- ") || line.Contains("Steps"))
-                        break;
+        //        if (collecting)
+        //        {
+        //            if (line.StartsWith("- ") || line.Contains("Steps"))
+        //                break;
 
-                    sectionText.Add(line.Trim());
-                }
+        //            sectionText.Add(line.Trim());
+        //        }
 
-                if (line.Contains(sectionHeader))
-                {
-                    collecting = true;
-                }
-            }
+        //        if (line.Contains(sectionHeader))
+        //        {
+        //            collecting = true;
+        //        }
+        //    }
 
-            return string.Join(" ", sectionText).Trim();
-        }
+        //    return string.Join(" ", sectionText).Trim();
+        //}
 
     }
 }

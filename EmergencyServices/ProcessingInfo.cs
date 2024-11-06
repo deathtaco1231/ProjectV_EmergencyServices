@@ -13,6 +13,9 @@ namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in 
         [Column("created_at")]
         public DateTime Timestamp { get; set; } = DateTime.Now;
 
+        [Column("disaster_type")]
+        public string DisasterType { get; set; }
+
         [Column("precaution_steps")] 
         public string PrecautionSteps { get; set; }
 

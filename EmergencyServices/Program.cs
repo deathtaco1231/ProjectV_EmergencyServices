@@ -24,24 +24,24 @@ namespace EmergencyServices.Group8
                 }
             }
 
-            ProcessedDisaster test = new ProcessedDisaster();
-            test.Id = 1;
-            test.DisasterType = "type here";
-            test.Priority = "priority";
-            test.DuringDisasterSteps = "during steps";
-            test.RecoverySteps = "recovery here";
-            test.PrecautionSteps = "precaution here";
-            test.Source = "source";
-            test.Description = "description";
-            test.SeverityLevel = 15.5;
-            string jsonTest = JsonConvert.SerializeObject(test);
+            //ProcessedDisaster test = new ProcessedDisaster();
+            //test.Id = 1;
+            //test.DisasterType = "type here";
+            //test.Priority = "priority";
+            //test.DuringDisasterSteps = "during steps";
+            //test.RecoverySteps = "recovery here";
+            //test.PrecautionSteps = "precaution here";
+            //test.Source = "source";
+            //test.Description = "description";
+            //test.SeverityLevel = 15.5;
+            //string jsonTest = JsonConvert.SerializeObject(test);
 
-            dynamic jsonContents = JObject.Parse(jsonTest);
-            ProcessedDisaster newDisaster = new ProcessedDisaster();
-            newDisaster.Id = jsonContents.Id;
-            newDisaster.DisasterType = jsonContents.DisasterType;
-            newDisaster.Priority = jsonContents.Priority;
-            // so on and so forth
+            //dynamic jsonContents = JObject.Parse(jsonTest);
+            //ProcessedDisaster newDisaster = new ProcessedDisaster();
+            //newDisaster.Id = jsonContents.Id;
+            //newDisaster.DisasterType = jsonContents.DisasterType;
+            //newDisaster.Priority = jsonContents.Priority;
+            //// so on and so forth
 
             Console.Read();
         }

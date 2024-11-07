@@ -2,6 +2,7 @@
 using EmergencyServices.Group8;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
 //public async Task Test1_AsyncSuccessful() When making a test that requires async
 //public void Test1_AsyncSuccessful() for any other test (except when specific type required)
 namespace EmergencyServices_Group8_Tests
@@ -69,7 +70,7 @@ namespace EmergencyServices_Group8_Tests
         //}
 
         [TestMethod]
-        public async Task Test_GetAllTestProcessedDisastersAsync_RetrievesAllEntries()
+        public async Task Test5_GetAllTestProcessedDisastersAsync_RetrievesAllEntries()
         {
             //Retrieve all disasters from the test table
             var allDisasters = await EmergencyBackend.GetAllTestProcessedDisastersAsync();
@@ -86,7 +87,7 @@ namespace EmergencyServices_Group8_Tests
         }
 
         [TestMethod]
-        public async Task Test_GetAllTestProcessedDisastersAsync_EmptyTable()
+        public async Task Test6_GetAllTestProcessedDisastersAsync_EmptyTable()
         {
             //Backup existing data
             var originalData = await EmergencyBackend.GetAllTestProcessedDisastersAsync();
@@ -110,7 +111,8 @@ namespace EmergencyServices_Group8_Tests
         }
 
         [TestMethod]
-        public async Task Test_GetDisastersByPriorityAsync_RetrievesWatchPriority()
+
+        public async Task Test7_GetDisastersByPriorityAsync_RetrievesWatchPriority()
         {
             //Retrieve disasters with "Watch" priority
             var watchDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Watch);
@@ -127,7 +129,7 @@ namespace EmergencyServices_Group8_Tests
         }
 
         [TestMethod]
-        public async Task Test_GetDisastersByPriorityAsync_RetrievesWarningPriority()
+        public async Task Test8_GetDisastersByPriorityAsync_RetrievesWarningPriority()
         {
             //Retrieve disasters with "Warning" priority
             var warningDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Warning);
@@ -143,7 +145,7 @@ namespace EmergencyServices_Group8_Tests
         }
 
         [TestMethod]
-        public async Task Test_GetDisastersByPriorityAsync_RetrievesUrgentPriority()
+        public async Task Test9_GetDisastersByPriorityAsync_RetrievesUrgentPriority()
         {
             //Retrieve disasters with "Urgent" priority
             var urgentDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Urgent);
@@ -159,7 +161,7 @@ namespace EmergencyServices_Group8_Tests
         }
 
         [TestMethod]
-        public async Task Test_GetDisastersByPriorityAsync_RetrievesCriticalPriority()
+        public async Task Test10_GetDisastersByPriorityAsync_RetrievesCriticalPriority()
         {
             //Retrieve disasters with "Critical" priority
             var criticalDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Critical);
@@ -173,5 +175,31 @@ namespace EmergencyServices_Group8_Tests
                 Debug.WriteLine($"ID: {disaster.Id}, Type: {disaster.DisasterType}, Priority: {disaster.Priority}");
             }
         }
+
+        [TestMethod]
+        public async Task Test5_CheckNumberOfRows()
+        {
+            //checks the number of rows against a number to see if it matches or not
+            int expectedRowCount = 10; 
+
+            var res = await EmergencyBackend.supabase.From<Testing>().Get();
+            int actualRowCount = res.Models.Count;
+
+            Assert.AreEqual(expectedRowCount, actualRowCount);
+        }
+
+        [TestMethod]
+        public async Task Test6_RowCountStability()
+        {
+            // test to make sure that number of rows are consistent with multiple calls
+            var initialRes = await EmergencyBackend.supabase.From<Testing>().Get();
+            int initialCount = initialRes.Models.Count;
+
+            var finalRes = await EmergencyBackend.supabase.From<Testing>().Get();
+            int finalCount = finalRes.Models.Count;
+
+            Assert.AreEqual(initialCount, finalCount);
+        }
+
     }
 }

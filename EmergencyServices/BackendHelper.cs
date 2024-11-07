@@ -42,5 +42,50 @@ namespace EmergencyServices.Group8
             }
             return true;
         }
+
+        internal static ProcessedDisaster ConvertToProcessedDisaster(Notification notif)
+        {
+            // Convert the notification's disaster type to uppercase for case-insensitive matching
+            string notificationDisasterType = notif.DisasterType.ToUpper();
+
+            ProcessingInfo matchingInfo = null;
+
+            // Loop through each entry in DisasterProcessingInfo to find a match
+            for (int i = 0; i < DisasterProcessingInfo.Count; i++)
+            {
+                // Convert each ProcessingInfo disaster type to uppercase before comparison
+                if (DisasterProcessingInfo[i].DisasterType.ToUpper() == notificationDisasterType)
+                {
+                    matchingInfo = DisasterProcessingInfo[i];
+                    break;
+                }
+            }
+
+            // Create a new ProcessedDisaster object and copy info from Notification
+            var processedDisaster = new ProcessedDisaster
+            {
+                DisasterType = notif.DisasterType,
+                Priority = notif.Priority,
+                Description = notif.Description,
+                SeverityLevel = notif.SeverityLevel ?? 0,
+                Source = notif.Source,
+            };
+
+            // Populate steps based on matching ProcessingInfo, or set to null if not found
+            if (matchingInfo != null)
+            {
+                processedDisaster.PrecautionSteps = matchingInfo.PrecautionSteps;
+                processedDisaster.DuringDisasterSteps = matchingInfo.DuringDisasterSteps;
+                processedDisaster.RecoverySteps = matchingInfo.RecoverySteps;
+            }
+            else
+            {
+                processedDisaster.PrecautionSteps = null;
+                processedDisaster.DuringDisasterSteps = null;
+                processedDisaster.RecoverySteps = null;
+            }
+
+            return processedDisaster;
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in 
 
         public override string ToString()
         {
-            return Id + " "  + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString() + '\n';
+            return Id + " "  + DisasterType + " " + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString() + '\n';
         }
     }
 }

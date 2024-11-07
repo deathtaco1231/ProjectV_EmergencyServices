@@ -6,6 +6,7 @@ using EmergencyServices.Group8;
 using System;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
 //public async Task Test1_AsyncSuccessful() When making a test that requires async
 //public void Test1_AsyncSuccessful() for any other test (except when specific type required)
 namespace EmergencyServices_Group8_Tests
@@ -37,6 +38,8 @@ namespace EmergencyServices_Group8_Tests
 
             Assert.IsTrue(models.Count > 0);
         }
+
+        [TestMethod]
         public async Task Test3_ClientPosteRowToTable()
         {
             var res = await EmergencyBackend.supabase.From<Testing>().Get();
@@ -51,6 +54,7 @@ namespace EmergencyServices_Group8_Tests
             var newModels = newRes.Models;
 
         }
+        [TestMethod]
         public async Task Test4_ClientDeleteRowFromTable()
         {
             // Test requires that Test 3 passed. This checks for the post from that test and aborts if not found.
@@ -69,5 +73,31 @@ namespace EmergencyServices_Group8_Tests
             
             Assert.IsTrue(models.Count > delModels.Count);
         }
+
+        [TestMethod]
+        public async Task Test5_CheckNumberOfRows()
+        {
+            //checks the number of rows against a number to see if it matches or not
+            int expectedRowCount = 10; 
+
+            var res = await EmergencyBackend.supabase.From<Testing>().Get();
+            int actualRowCount = res.Models.Count;
+
+            Assert.AreEqual(expectedRowCount, actualRowCount);
+        }
+
+        [TestMethod]
+        public async Task Test6_RowCountStability()
+        {
+            // test to make sure that number of rows are consistent with multiple calls
+            var initialRes = await EmergencyBackend.supabase.From<Testing>().Get();
+            int initialCount = initialRes.Models.Count;
+
+            var finalRes = await EmergencyBackend.supabase.From<Testing>().Get();
+            int finalCount = finalRes.Models.Count;
+
+            Assert.AreEqual(initialCount, finalCount);
+        }
+
     }
 }

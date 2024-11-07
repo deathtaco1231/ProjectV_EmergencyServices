@@ -37,7 +37,9 @@ namespace EmergencyServices.Group8
             if (notifJson == null)
                 return null;
             Notification notif = BackendHelper.JsonToNotification(notifJson);
-            return /*Call to function Aidan is making here which processes notification into ProcessedDisaster*/ null; // REMOVE NULL LATER
+
+            ProcessedDisaster processedDisaster = BackendHelper.ConvertToProcessedDisaster(notif);
+            return processedDisaster;
         }
 
         //public static async Task LoadPdfContentToSupabase(string pdfFilePath)
@@ -162,6 +164,7 @@ namespace EmergencyServices.Group8
 
         //    return string.Join(" ", sectionText).Trim();
         //}
+
 
     }
 }

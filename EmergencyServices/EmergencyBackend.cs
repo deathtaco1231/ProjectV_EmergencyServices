@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+
 using System.IO;
+
 
 namespace EmergencyServices.Group8
 {
@@ -38,6 +40,91 @@ namespace EmergencyServices.Group8
 
             ProcessedDisaster processedDisaster = BackendHelper.ConvertToProcessedDisaster(notif);
             return processedDisaster;
+        }
+
+        public static async Task<List<ProcessedDisaster>> GetAllProcessedDisastersAsync()
+        {
+            try
+            {
+                // Query the 'disaster_processed' table
+                var response = await supabase
+                    .From<ProcessedDisaster>()   // Target the production table model
+                    .Select("*")
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving processed disasters from disaster_processed table: {ex.Message}");
+                return new List<ProcessedDisaster>();
+            }
+        }
+
+        public static async Task<List<TestProcessedDisaster>> GetAllTestProcessedDisastersAsync()
+        {
+            try
+            {
+                // Query the 'test_disaster_processed' table
+                var response = await supabase
+                    .From<TestProcessedDisaster>()   // Target the test table model
+                    .Select("*")
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving processed disasters from test_disaster_processed table: {ex.Message}");
+                return new List<TestProcessedDisaster>();
+            }
+        }
+
+
+        public static async Task<List<ProcessedDisaster>> GetDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
+        {
+            try
+            {
+                string priorityAsString = priorityLevel.ToString();
+                Debug.WriteLine($"Filtering production table for priority: {priorityAsString}");
+
+                // Query the 'disaster_processed' table to filter by priority level
+                var response = await supabase
+                    .From<ProcessedDisaster>()    // Target the production model
+                    .Select("*")
+                    .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving disasters with priority '{priorityLevel}' from production table: {ex.Message}");
+                return new List<ProcessedDisaster>();
+            }
+        }
+
+        public static async Task<List<TestProcessedDisaster>> GetTestDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
+        {
+            try
+            {
+                string priorityAsString = priorityLevel.ToString();
+                Debug.WriteLine($"Filtering test table for priority: {priorityAsString}");
+
+                // Query the 'test_disaster_processed' table to filter by priority level
+                var response = await supabase
+                    .From<TestProcessedDisaster>()    // Target the test model
+                    .Select("*")
+                    .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving disasters with priority '{priorityLevel}' from test table: {ex.Message}");
+                return new List<TestProcessedDisaster>();
+            }
         }
 
         //public static async Task LoadPdfContentToSupabase(string pdfFilePath)

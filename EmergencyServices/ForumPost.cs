@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Postgrest.Models;
 using Postgrest.Attributes;
-using Supabase.Core.Attributes;
-
+// CURRENTLY UNUSED
 namespace EmergencyServices.Group8
 {
     [Table("forum_posts")]
@@ -16,7 +11,9 @@ namespace EmergencyServices.Group8
         public int Id { get; set; }
 
         [Column("created_at")]
-        public DateTime createdAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        //public DateTime CreatedAt { get; set; } = DateTime.Now;
+        //public DateTime CreatedAt { get => createdAt; set { createdAt = DateTime.Now; } }
 
         [Column("user_name")]
         public string userName { get; set; }
@@ -29,7 +26,7 @@ namespace EmergencyServices.Group8
 
         public override string ToString()
         {
-            return Id.ToString() + "," + createdAt.ToString() + "," + userName + "," + postHeader + "," + postBody;
+            return Id.ToString() + "," + CreatedAt.ToString() + "," + userName + "," + postHeader + "," + postBody;
         }
 
         public void CreatePost(string name, string postHead, string body)

@@ -4,8 +4,8 @@ using System;
 
 namespace EmergencyServices.Group8
 {
-    [Table("testing")]
-    public class ProcessedDisaster : BaseModel
+    [Table("test_disaster_processed")] //Target the test table
+    public class TestProcessedDisaster : BaseModel
     {
         [PrimaryKey("id")]
         public int Id { get; set; }
@@ -14,15 +14,15 @@ namespace EmergencyServices.Group8
         public string DisasterType { get; set; }
 
         [Column("priority")]
-        public string Priority { get; set; }  // Watch, Warning, Urgent, Critical
+        public string Priority { get; set; }  //Watch, Warning, Urgent, Critical
 
         [Column("alert_description")]
         public string Description { get; set; }
 
-        [Column("precaution_steps")] // FIRST ADDITIONAL FIELD NOT IN STANDARD ALERT
+        [Column("precaution_steps")]
         public string PrecautionSteps { get; set; }
 
-        [Column("during_disaster_steps")] // SECOND ADDITIONAL FIELD
+        [Column("during_disaster_steps")]
         public string DuringDisasterSteps { get; set; }
 
         [Column("recovery_steps")]
@@ -36,10 +36,6 @@ namespace EmergencyServices.Group8
 
         [Column("notif_source")]
         public string Source { get; set; }  // NWS or Emergency Services
-
-        public override string ToString()
-        {
-            return Id + " " + DisasterType + " " + Priority + " " + Description + " " + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString() + " " + SeverityLevel + " " + Source + '\n';
-        }
     }
 }
+

@@ -1,50 +1,48 @@
 ﻿//#define TESTING
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
-namespace EmergencyServices.Group8 // Likely will just be used for testing since 
+namespace EmergencyServices.Group8 
 {
-    internal class Program
+    internal class Program // Likely will just be used for testing since all functionality will be in static class and methods and main will be in group 7's module
     {
         static async Task Main(string[] args)
         {
-            DotNetEnv.Env.Load();
+            EmergencyBackend.Init();
 
-            var url = Environment.GetEnvironmentVariable("SUPABASE_URL");
-            var key = Environment.GetEnvironmentVariable("SUPABASE_KEY");
-            var options = new Supabase.SupabaseOptions
+            var result = await EmergencyBackend.supabase.From<Testing>().Get();
+            var strings = result.Models;
+            if (strings.Count == 0) // this for testing
+                Console.WriteLine("No rows.");
+            else // this also for testing
             {
-                AutoConnectRealtime = true
-            };
+                foreach (var c in strings)
+                {
+                    Console.WriteLine(c.ToString());
+                }
+            }
 
-            var supabase = new Supabase.Client(url, key, options);
-            await supabase.InitializeAsync();
+            //ProcessedDisaster test = new ProcessedDisaster();
+            //test.Id = 1;
+            //test.DisasterType = "type here";
+            //test.Priority = "priority";
+            //test.DuringDisasterSteps = "during steps";
+            //test.RecoverySteps = "recovery here";
+            //test.PrecautionSteps = "precaution here";
+            //test.Source = "source";
+            //test.Description = "description";
+            //test.SeverityLevel = 15.5;
+            //string jsonTest = JsonConvert.SerializeObject(test);
 
-            //var result = await supabase.From<ForumPost>().Get();
-            //var cities = result.Models;
+            //dynamic jsonContents = JObject.Parse(jsonTest);
+            //ProcessedDisaster newDisaster = new ProcessedDisaster();
+            //newDisaster.Id = jsonContents.Id;
+            //newDisaster.DisasterType = jsonContents.DisasterType;
+            //newDisaster.Priority = jsonContents.Priority;
+            //// so on and so forth
 
-            //if (cities.Count == 0) // this for testing
-            //    Console.WriteLine("No rows.");
-            //else // this also for testing
-            //{
-            //    foreach (var c in cities)
-            //    {
-            //        Console.WriteLine(c.ToString());
-            //    }
-            //}
-            //
-            //var model = new ForumPost
-            //{
-            //    userName = "Test Insert User Name",
-            //    postHeader = "Test Insert Post Header",
-            //    postBody = "Test Insert Post Body",
-            //    createdAt = DateTime.Now
-            //};
-            //await supabase.From<ForumPost>().Insert(model);
             Console.Read();
         }
     }

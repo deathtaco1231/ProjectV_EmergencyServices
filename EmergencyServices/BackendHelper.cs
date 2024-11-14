@@ -68,20 +68,20 @@ namespace EmergencyServices.Group8
                 Priority = notif.Priority,
                 Description = notif.Description,
                 SeverityLevel = notif.SeverityLevel ?? 0,
-                Source = notif.Source,
+                Source = notif.Source
             };
 
             // Populate steps based on matching ProcessingInfo, or set to null if not found
             if (matchingInfo != null)
             {
-                processedDisaster.PrecautionSteps = matchingInfo.PrecautionSteps;
-                processedDisaster.DuringDisasterSteps = matchingInfo.DuringDisasterSteps;
+                processedDisaster.PreparationSteps = matchingInfo.PrecautionSteps;
+                processedDisaster.ActiveSteps = matchingInfo.DuringDisasterSteps;
                 processedDisaster.RecoverySteps = matchingInfo.RecoverySteps;
             }
             else
             {
-                processedDisaster.PrecautionSteps = null;
-                processedDisaster.DuringDisasterSteps = null;
+                processedDisaster.PreparationSteps = null;
+                processedDisaster.ActiveSteps = null;
                 processedDisaster.RecoverySteps = null;
             }
 

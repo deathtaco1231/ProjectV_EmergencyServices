@@ -15,5 +15,10 @@ namespace EmergencyServices.Group8
         public DateTime Timestamp { get; set; }
         public double? SeverityLevel { get; set; }  // E.g., Rainfall in mm, Hurricane category
         public string Source { get; set; }  // NWS or Emergency Services
+
+        public override string ToString()
+        {
+            return Id + " " + DisasterType + " " + Description + " " + Timestamp.ToString() + " " + SeverityLevel + " " + Source + "\n";
+        }
     }
 }

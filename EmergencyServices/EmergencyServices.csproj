@@ -288,6 +288,7 @@
     <Compile Include="StandardNotification.cs" />
     <Compile Include="Testing.cs" />
     <Compile Include="TestProcessedDisasters.cs" />
+    <Compile Include="UserDisasterReport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".env">

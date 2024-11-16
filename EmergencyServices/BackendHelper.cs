@@ -11,6 +11,12 @@ namespace EmergencyServices.Group8
     internal static class BackendHelper
     {
         public static List<ProcessingInfo> DisasterProcessingInfo;
+
+        public static List<UserDisasterReport> UserDisasterReports = new List<UserDisasterReport>();
+
+        private const ulong acceptedTimeDiffClauseOne = 36000000000; // currently single hour binary 
+
+        private const ulong acceptedTimeDiffClauseTwo = 3000000000; // currently 5 minute binary
         public static Notification JsonToNotification(string json)
         {
             dynamic jsonContents = JObject.Parse(json);
@@ -86,6 +92,26 @@ namespace EmergencyServices.Group8
             }
 
             return processedDisaster;
+        }
+        internal static bool VerifyUserReport(UserDisasterReport usrReport)
+        {
+            if (usrReport == null)
+                return false;
+
+            foreach (UserDisasterReport r in UserDisasterReports)
+            {
+                if ((r.user_id == usrReport.user_id && DateSeperation(usrReport.created_at, r.created_at, acceptedTimeDiffClauseOne) == false) || (String.Compare(r.@event.type.ToUpper(), usrReport.@event.type.ToUpper()) == 0 && DateSeperation(usrReport.created_at, r.created_at, acceptedTimeDiffClauseTwo) == false))
+                    return false;        
+            }
+
+            UserDisasterReports.Add(usrReport); // only add to list if approved in order to adhere to spam timing rules accurately 
+            return true;
+        }
+        internal static bool DateSeperation(DateTime incoming, DateTime existing, ulong diff) // true if greater than time limit set
+        {
+            if (((ulong)incoming.ToBinary() - (ulong)existing.ToBinary()) > diff)
+                return true;
+            return false;
         }
     }
 }

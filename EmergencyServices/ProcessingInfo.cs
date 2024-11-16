@@ -1,9 +1,11 @@
 ﻿using Postgrest.Models;
 using Postgrest.Attributes;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in ticket 107
 {
+    [ExcludeFromCodeCoverage]
     [Table("disaster_emergency_data")]
     internal class ProcessingInfo : BaseModel
     {

@@ -1,9 +1,11 @@
 ﻿using Postgrest.Models;
 using Postgrest.Attributes;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EmergencyServices.Group8
 {
+    [ExcludeFromCodeCoverage]
     [Table("testing")]
     public class ProcessedDisaster : BaseModel
     {

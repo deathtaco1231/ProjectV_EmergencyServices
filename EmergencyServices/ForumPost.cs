@@ -1,9 +1,11 @@
 ﻿using System;
 using Postgrest.Models;
 using Postgrest.Attributes;
+using System.Diagnostics.CodeAnalysis;
 // CURRENTLY UNUSED
 namespace EmergencyServices.Group8
 {
+    [ExcludeFromCodeCoverage]
     [Table("forum_posts")]
     public class ForumPost : BaseModel
     {

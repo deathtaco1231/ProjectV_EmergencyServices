@@ -1,8 +1,9 @@
 ﻿namespace EmergencyServices.Group8
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
-
+    [ExcludeFromCodeCoverage]
     public static class DotEnv // Backup class to load environment variables in case DotNetEnv does not work
     {
         public static void Load(string filePath)

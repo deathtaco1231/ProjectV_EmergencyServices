@@ -2,10 +2,12 @@
 using Postgrest.Models;
 using Postgrest.Attributes;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 [assembly: InternalsVisibleTo("EmergencyServices_Group8_Tests")]
 namespace EmergencyServices.Group8
 {
+    [ExcludeFromCodeCoverage]
     [Table("testing")] // Table for testing only
     internal class Testing : BaseModel
     {

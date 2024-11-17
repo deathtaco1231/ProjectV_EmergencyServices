@@ -69,14 +69,14 @@ namespace EmergencyServices.Group8
                 Priority = notif.Priority,
                 Description = notif.Description,
                 SeverityLevel = notif.SeverityLevel ?? 0,
-                Source = notif.Source,
+                Source = notif.Source
             };
 
             // Populate steps based on matching ProcessingInfo, or set to default steps if not found
             if (matchingInfo != null)
             {
-                processedDisaster.PrecautionSteps = matchingInfo.PrecautionSteps;
-                processedDisaster.DuringDisasterSteps = matchingInfo.DuringDisasterSteps;
+                processedDisaster.PreparationSteps = matchingInfo.PrecautionSteps;
+                processedDisaster.ActiveSteps = matchingInfo.DuringDisasterSteps;
                 processedDisaster.RecoverySteps = matchingInfo.RecoverySteps;
             }
             else
@@ -84,6 +84,7 @@ namespace EmergencyServices.Group8
                 processedDisaster.PrecautionSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
                 processedDisaster.DuringDisasterSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
                 processedDisaster.RecoverySteps = "Lookout for instructions from officials and community leaders, inspect your area for damages, listen to your local radio or news channel for further instructions";
+
             }
 
             return processedDisaster;

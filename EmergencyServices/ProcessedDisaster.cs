@@ -20,10 +20,10 @@ namespace EmergencyServices.Group8
         public string Description { get; set; }
 
         [Column("precaution_steps")] // FIRST ADDITIONAL FIELD NOT IN STANDARD ALERT
-        public string PrecautionSteps { get; set; }
+        public string PreparationSteps { get; set; }
 
         [Column("during_disaster_steps")] // SECOND ADDITIONAL FIELD
-        public string DuringDisasterSteps { get; set; }
+        public string ActiveSteps { get; set; }
 
         [Column("recovery_steps")]
         public string RecoverySteps { get; set; }
@@ -39,7 +39,7 @@ namespace EmergencyServices.Group8
 
         public override string ToString()
         {
-            return Id + " " + DisasterType + " " + Priority + " " + Description + " " + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString() + " " + SeverityLevel + " " + Source + '\n';
+            return Id + " " + DisasterType + " " + Priority + " " + Description + " " + PreparationSteps + " " + ActiveSteps + " " + RecoverySteps + " " + Timestamp.ToString() + " " + SeverityLevel + " " + Source + '\n';
         }
     }
 }

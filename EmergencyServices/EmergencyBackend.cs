@@ -49,9 +49,9 @@ namespace EmergencyServices.Group8
         {
             try
             {
-                // Query the 'disaster_processed' table
+                //Query the 'disaster_processed' table
                 var response = await supabase
-                    .From<ProcessedDisaster>()   // Target the production table model
+                    .From<ProcessedDisaster>()   //Target the production table model
                     .Select("*")
                     .Get();
 
@@ -64,25 +64,6 @@ namespace EmergencyServices.Group8
             }
         }
 
-        public static async Task<List<TestProcessedDisaster>> GetAllTestProcessedDisastersAsync()
-        {
-            try
-            {
-                // Query the 'test_disaster_processed' table
-                var response = await supabase
-                    .From<TestProcessedDisaster>()   // Target the test table model
-                    .Select("*")
-                    .Get();
-
-                return response.Models;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error retrieving processed disasters from test_disaster_processed table: {ex.Message}");
-                return new List<TestProcessedDisaster>();
-            }
-        }
-
         public static async Task<List<ProcessedDisaster>> GetDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
         {
             try
@@ -90,9 +71,9 @@ namespace EmergencyServices.Group8
                 string priorityAsString = priorityLevel.ToString();
                 Debug.WriteLine($"Filtering production table for priority: {priorityAsString}");
 
-                // Query the 'disaster_processed' table to filter by priority level
+                //Query the 'disaster_processed' table to filter by priority level
                 var response = await supabase
-                    .From<ProcessedDisaster>()    // Target the production model
+                    .From<ProcessedDisaster>()    //Target the production model
                     .Select("*")
                     .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
                     .Get();
@@ -106,29 +87,48 @@ namespace EmergencyServices.Group8
             }
         }
 
-        public static async Task<List<TestProcessedDisaster>> GetTestDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
+        public static async Task<bool> MarkDisasterAsCriticalAsync(int disasterId)
         {
             try
             {
-                string priorityAsString = priorityLevel.ToString();
-                Debug.WriteLine($"Filtering test table for priority: {priorityAsString}");
-
-                // Query the 'test_disaster_processed' table to filter by priority level
-                var response = await supabase
-                    .From<TestProcessedDisaster>()    // Target the test model
-                    .Select("*")
-                    .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
+                //Step 1: Retrieve the current disaster by ID
+                var currentDisasterResponse = await supabase
+                    .From<ProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
                     .Get();
 
-                return response.Models;
+                var currentDisaster = currentDisasterResponse.Models.FirstOrDefault();
+
+                //Step 2: Check if the current priority is 'Urgent'
+                if (currentDisaster == null)
+                {
+                    Debug.WriteLine("Disaster not found.");
+                    return false;
+                }
+
+                if (currentDisaster.Priority != "Urgent")
+                {
+                    Debug.WriteLine("Disaster priority is not 'Urgent', cannot update to 'Critical'.");
+                    return false;
+                }
+
+                //Step 3: Update the priority to 'Critical'
+                var updatedDisaster = new { Priority = "Critical" };
+
+                var response = await supabase
+                    .From<ProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Update(updatedDisaster);
+
+                return response.Models.Count > 0; //Returns true if at least one record was updated
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error retrieving disasters with priority '{priorityLevel}' from test table: {ex.Message}");
-                return new List<TestProcessedDisaster>();
+                Debug.WriteLine($"Error marking disaster as critical: {ex.Message}");
+                return false; //Return false if an error occurs
             }
         }
-
+      
         public static bool VerifyUserReport(string usrReportJson)
         {
             UserDisasterReport deSerializedReport = JsonConvert.DeserializeObject<UserDisasterReport>(usrReportJson);

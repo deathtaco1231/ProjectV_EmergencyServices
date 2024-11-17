@@ -192,5 +192,110 @@ namespace EmergencyServices_Group8_Tests
             Assert.AreEqual(initialCount, finalCount);
         }
 
+        [TestMethod]
+        public async Task Test_MarkDisasterAsCriticalAsync_OnlyWhenUrgent()
+        {
+            if (EmergencyBackend.supabase == null)
+            {
+                EmergencyBackend.Init();
+            }
+
+            //Step 1: Insert a disaster with a non-'Urgent' priority
+            var testDisaster = new TestProcessedDisaster
+            {
+                DisasterType = "Flood",
+                Priority = "Warning", // Not 'Urgent'
+                Description = "Test flood warning.",
+                PrecautionSteps = "Test precaution steps.",
+                DuringDisasterSteps = "Test during disaster steps.",
+                RecoverySteps = "Test recovery steps.",
+                Timestamp = DateTime.Now,
+                SeverityLevel = 3.0,
+                Source = "NWS"
+            };
+
+            var insertResponse = await EmergencyBackend.supabase.From<TestProcessedDisaster>().Insert(testDisaster);
+            Assert.IsTrue(insertResponse.Models.Count > 0, "Failed to insert test disaster.");
+
+            int disasterId = insertResponse.Models[0].Id;
+
+            try
+            {
+                //Step 2: Attempt to mark it as 'Critical' (should fail)
+                bool success = await BackendHelper.MarkTestDisasterAsCriticalAsync(disasterId);
+                Assert.IsFalse(success, "Disaster was incorrectly updated to 'Critical' despite not being 'Urgent'.");
+
+                //Step 3: Update the disaster to 'Urgent' and retry
+                await EmergencyBackend.supabase
+                    .From<TestProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Update(new { Priority = "Urgent" });
+
+                success = await BackendHelper.MarkTestDisasterAsCriticalAsync(disasterId);
+                Assert.IsTrue(success, "Failed to update disaster to 'Critical' when priority was 'Urgent'.");
+            }
+            finally
+            {
+                //Cleanup: Remove the inserted disaster
+                await EmergencyBackend.supabase
+                    .From<TestProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Delete();
+            }
+        }
+
+        [TestMethod]
+        public async Task Test_MarkDisasterAsCriticalAsync_UpdatesToCritical()
+        {
+            if (EmergencyBackend.supabase == null)
+            {
+                EmergencyBackend.Init();
+            }
+
+            //Step 1: Insert a disaster with 'Urgent' priority
+            var testDisaster = new TestProcessedDisaster
+            {
+                DisasterType = "Hurricane",
+                Priority = "Urgent", // This should allow it to update to 'Critical'
+                Description = "Test hurricane warning.",
+                PrecautionSteps = "Test precaution steps for hurricane.",
+                DuringDisasterSteps = "Test during disaster steps for hurricane.",
+                RecoverySteps = "Test recovery steps for hurricane.",
+                Timestamp = DateTime.Now,
+                SeverityLevel = 5.0,
+                Source = "NWS"
+            };
+
+            var insertResponse = await EmergencyBackend.supabase.From<TestProcessedDisaster>().Insert(testDisaster);
+            Assert.IsTrue(insertResponse.Models.Count > 0, "Failed to insert test disaster.");
+
+            int disasterId = insertResponse.Models[0].Id;
+
+            try
+            {
+                //Step 2: Attempt to mark it as 'Critical' (should succeed)
+                bool success = await BackendHelper.MarkTestDisasterAsCriticalAsync(disasterId);
+                Assert.IsTrue(success, "Failed to update disaster to 'Critical' when priority was 'Urgent'.");
+
+                //Step 3: Verify the update
+                var updatedDisasterResponse = await EmergencyBackend.supabase
+                    .From<TestProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Get();
+
+                var updatedDisaster = updatedDisasterResponse.Models.FirstOrDefault();
+                Assert.IsNotNull(updatedDisaster, "Updated disaster not found.");
+                Assert.AreEqual("Critical", updatedDisaster.Priority, "Disaster priority was not updated to 'Critical'.");
+            }
+            finally
+            {
+                //Cleanup: Remove the inserted disaster
+                await EmergencyBackend.supabase
+                    .From<TestProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Delete();
+            }
+        }
+
     }
 }

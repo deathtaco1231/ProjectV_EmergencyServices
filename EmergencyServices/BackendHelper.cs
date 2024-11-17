@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,8 +60,9 @@ namespace EmergencyServices.Group8
             // Loop through each entry in DisasterProcessingInfo to find a match
             for (int i = 0; i < DisasterProcessingInfo.Count; i++)
             {
-                // Convert each ProcessingInfo disaster type to uppercase before comparison
-                if (DisasterProcessingInfo[i].DisasterType.ToUpper() == notificationDisasterType)
+                // Retrieve the disaster type from the database, convert it to uppercase, and compare
+                string databaseDisasterType = DisasterProcessingInfo[i].DisasterType.ToUpper();
+                if (databaseDisasterType == notificationDisasterType)
                 {
                     matchingInfo = DisasterProcessingInfo[i];
                     break;
@@ -77,7 +79,7 @@ namespace EmergencyServices.Group8
                 Source = notif.Source
             };
 
-            // Populate steps based on matching ProcessingInfo, or set to null if not found
+            // Populate steps based on matching ProcessingInfo, or set to default steps if not found
             if (matchingInfo != null)
             {
                 processedDisaster.PreparationSteps = matchingInfo.PrecautionSteps;
@@ -86,13 +88,15 @@ namespace EmergencyServices.Group8
             }
             else
             {
-                processedDisaster.PreparationSteps = null;
-                processedDisaster.ActiveSteps = null;
-                processedDisaster.RecoverySteps = null;
+                processedDisaster.PrecautionSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
+                processedDisaster.DuringDisasterSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
+                processedDisaster.RecoverySteps = "Lookout for instructions from officials and community leaders, inspect your area for damages, listen to your local radio or news channel for further instructions";
+
             }
 
             return processedDisaster;
         }
+      
         internal static bool VerifyUserReport(UserDisasterReport usrReport)
         {
             if (usrReport == null)
@@ -112,6 +116,89 @@ namespace EmergencyServices.Group8
             if (((ulong)incoming.ToBinary() - (ulong)existing.ToBinary()) > diff)
                 return true;
             return false;
+        }
+
+        public static async Task<List<TestProcessedDisaster>> GetAllTestProcessedDisastersAsync()
+        {
+            try
+            {
+                //Query the 'test_disaster_processed' table
+                var response = await supabase
+                    .From<TestProcessedDisaster>()   // Target the test table model
+                    .Select("*")
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving processed disasters from test_disaster_processed table: {ex.Message}");
+                return new List<TestProcessedDisaster>();
+            }
+        }
+
+        public static async Task<List<TestProcessedDisaster>> GetTestDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
+        {
+            try
+            {
+                string priorityAsString = priorityLevel.ToString();
+                Debug.WriteLine($"Filtering test table for priority: {priorityAsString}");
+
+                // Query the 'test_disaster_processed' table to filter by priority level
+                var response = await supabase
+                    .From<TestProcessedDisaster>()    // Target the test model
+                    .Select("*")
+                    .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving disasters with priority '{priorityLevel}' from test table: {ex.Message}");
+                return new List<TestProcessedDisaster>();
+            }
+        }
+
+        public static async Task<bool> MarkTestDisasterAsCriticalAsync(int disasterId)
+        {
+            try
+            {
+                // Retrieve the current disaster by ID
+                var currentDisasterResponse = await supabase
+                    .From<TestProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Get();
+
+                var currentDisaster = currentDisasterResponse.Models.FirstOrDefault();
+
+                if (currentDisaster == null)
+                {
+                    Debug.WriteLine("Test disaster not found.");
+                    return false;
+                }
+
+                if (currentDisaster.Priority != "Urgent")
+                {
+                    Debug.WriteLine("Test disaster priority is not 'Urgent', cannot update to 'Critical'.");
+                    return false;
+                }
+
+                // Update the priority to 'Critical'
+                var updatedDisaster = new { Priority = "Critical" };
+
+                var response = await supabase
+                    .From<TestProcessedDisaster>()
+                    .Where(d => d.Id == disasterId)
+                    .Update(updatedDisaster);
+
+                return response.Models.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error marking test disaster as critical: {ex.Message}");
+                return false;
+            }
         }
     }
 }

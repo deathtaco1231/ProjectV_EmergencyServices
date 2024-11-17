@@ -2,6 +2,8 @@
 using EmergencyServices.Group8;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Linq;
+using System;
 using System.Collections.Generic;
 //public async Task Test1_AsyncSuccessful() When making a test that requires async
 //public void Test1_AsyncSuccessful() for any other test (except when specific type required)
@@ -76,7 +78,7 @@ namespace EmergencyServices_Group8_Tests
         public async Task Test5_GetAllTestProcessedDisastersAsync_RetrievesAllEntries()
         {
             //Retrieve all disasters from the test table
-            var allDisasters = await EmergencyBackend.GetAllTestProcessedDisastersAsync();
+            var allDisasters = await BackendHelper.GetAllTestProcessedDisastersAsync();
 
             //Assert that data was retrieved and that the table is not empty
             Assert.IsNotNull(allDisasters, "The retrieved data is null.");
@@ -93,7 +95,7 @@ namespace EmergencyServices_Group8_Tests
         public async Task Test6_GetAllTestProcessedDisastersAsync_EmptyTable()
         {
             //Backup existing data
-            var originalData = await EmergencyBackend.GetAllTestProcessedDisastersAsync();
+            var originalData = await BackendHelper.GetAllTestProcessedDisastersAsync();
 
             //Clear the table by deleting each record in the test data
             foreach (var record in originalData)
@@ -102,7 +104,7 @@ namespace EmergencyServices_Group8_Tests
             }
 
             //Test that the table is now empty
-            var emptyDisasters = await EmergencyBackend.GetAllTestProcessedDisastersAsync();
+            var emptyDisasters = await BackendHelper.GetAllTestProcessedDisastersAsync();
             Assert.IsNotNull(emptyDisasters);
             Assert.AreEqual(0, emptyDisasters.Count, "Expected no data in test_disaster_processed table.");
 
@@ -118,7 +120,7 @@ namespace EmergencyServices_Group8_Tests
         public async Task Test7_GetDisastersByPriorityAsync_RetrievesWatchPriority()
         {
             //Retrieve disasters with "Watch" priority
-            var watchDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Watch);
+            var watchDisasters = await BackendHelper.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Watch);
 
             //Assert that all retrieved disasters have the "Watch" priority
             Assert.IsNotNull(watchDisasters, "The retrieved data is null.");
@@ -135,7 +137,7 @@ namespace EmergencyServices_Group8_Tests
         public async Task Test8_GetDisastersByPriorityAsync_RetrievesWarningPriority()
         {
             //Retrieve disasters with "Warning" priority
-            var warningDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Warning);
+            var warningDisasters = await BackendHelper.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Warning);
 
             Assert.IsNotNull(warningDisasters, "The retrieved data is null.");
             Assert.IsTrue(warningDisasters.Count > 0, "No disasters found with the 'Warning' priority.");
@@ -151,7 +153,7 @@ namespace EmergencyServices_Group8_Tests
         public async Task Test9_GetDisastersByPriorityAsync_RetrievesUrgentPriority()
         {
             //Retrieve disasters with "Urgent" priority
-            var urgentDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Urgent);
+            var urgentDisasters = await BackendHelper.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Urgent);
 
             Assert.IsNotNull(urgentDisasters, "The retrieved data is null.");
             Assert.IsTrue(urgentDisasters.Count > 0, "No disasters found with the 'Urgent' priority.");
@@ -167,7 +169,7 @@ namespace EmergencyServices_Group8_Tests
         public async Task Test10_GetDisastersByPriorityAsync_RetrievesCriticalPriority()
         {
             //Retrieve disasters with "Critical" priority
-            var criticalDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Critical);
+            var criticalDisasters = await BackendHelper.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Critical);
 
             Assert.IsNotNull(criticalDisasters, "The retrieved data is null.");
             Assert.IsTrue(criticalDisasters.Count > 0, "No disasters found with the 'Critical' priority.");
@@ -229,7 +231,8 @@ namespace EmergencyServices_Group8_Tests
                 await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
-                    .Update(new { Priority = "Urgent" });
+                    .Set(d => d.Priority, "Urgent")
+                    .Update();
 
                 success = await BackendHelper.MarkTestDisasterAsCriticalAsync(disasterId);
                 Assert.IsTrue(success, "Failed to update disaster to 'Critical' when priority was 'Urgent'.");

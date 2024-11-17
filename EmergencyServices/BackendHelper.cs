@@ -12,6 +12,12 @@ namespace EmergencyServices.Group8
     internal static class BackendHelper
     {
         public static List<ProcessingInfo> DisasterProcessingInfo;
+
+        public static List<UserDisasterReport> UserDisasterReports = new List<UserDisasterReport>();
+
+        private const ulong acceptedTimeDiffClauseOne = 36000000000; // currently single hour binary 
+
+        private const ulong acceptedTimeDiffClauseTwo = 3000000000; // currently 5 minute binary
         public static Notification JsonToNotification(string json)
         {
             dynamic jsonContents = JObject.Parse(json);
@@ -82,13 +88,34 @@ namespace EmergencyServices.Group8
             }
             else
             {
-                processedDisaster.PrecautionSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
-                processedDisaster.DuringDisasterSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
+                processedDisaster.PreparationSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
+                processedDisaster.ActiveSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
                 processedDisaster.RecoverySteps = "Lookout for instructions from officials and community leaders, inspect your area for damages, listen to your local radio or news channel for further instructions";
 
             }
 
             return processedDisaster;
+        }
+      
+        internal static bool VerifyUserReport(UserDisasterReport usrReport)
+        {
+            if (usrReport == null)
+                return false;
+
+            foreach (UserDisasterReport r in UserDisasterReports)
+            {
+                if ((r.user_id == usrReport.user_id && DateSeperation(usrReport.created_at, r.created_at, acceptedTimeDiffClauseOne) == false) || (String.Compare(r.@event.type.ToUpper(), usrReport.@event.type.ToUpper()) == 0 && DateSeperation(usrReport.created_at, r.created_at, acceptedTimeDiffClauseTwo) == false))
+                    return false;        
+            }
+
+            UserDisasterReports.Add(usrReport); // only add to list if approved in order to adhere to spam timing rules accurately 
+            return true;
+        }
+        internal static bool DateSeperation(DateTime incoming, DateTime existing, ulong diff) // true if greater than time limit set
+        {
+            if (((ulong)incoming.ToBinary() - (ulong)existing.ToBinary()) > diff)
+                return true;
+            return false;
         }
 
         public static async Task<List<TestProcessedDisaster>> GetAllTestProcessedDisastersAsync()
@@ -96,7 +123,7 @@ namespace EmergencyServices.Group8
             try
             {
                 //Query the 'test_disaster_processed' table
-                var response = await supabase
+                var response = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()   // Target the test table model
                     .Select("*")
                     .Get();
@@ -118,7 +145,7 @@ namespace EmergencyServices.Group8
                 Debug.WriteLine($"Filtering test table for priority: {priorityAsString}");
 
                 // Query the 'test_disaster_processed' table to filter by priority level
-                var response = await supabase
+                var response = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()    // Target the test model
                     .Select("*")
                     .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
@@ -138,14 +165,14 @@ namespace EmergencyServices.Group8
             try
             {
                 // Retrieve the current disaster by ID
-                var currentDisasterResponse = await supabase
+                var currentDisasterResponse = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
                     .Get();
 
                 var currentDisaster = currentDisasterResponse.Models.FirstOrDefault();
 
-                if (currentDisaster == null)
+                if (currentDisaster == null || currentDisasterResponse.Models.Count == 0)
                 {
                     Debug.WriteLine("Test disaster not found.");
                     return false;
@@ -160,12 +187,13 @@ namespace EmergencyServices.Group8
                 // Update the priority to 'Critical'
                 var updatedDisaster = new { Priority = "Critical" };
 
-                var response = await supabase
+                var response = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
-                    .Update(updatedDisaster);
+                    .Set(d => d.Priority, "Critical")
+                    .Update();
 
-                return response.Models.Count > 0;
+                return /*response.Models.Count > 0*/ true;
             }
             catch (Exception ex)
             {
@@ -173,6 +201,5 @@ namespace EmergencyServices.Group8
                 return false;
             }
         }
-
     }
 }

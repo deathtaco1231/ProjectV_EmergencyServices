@@ -22,12 +22,12 @@ namespace EmergencyServices_Group8_Tests
         [TestMethod]
         public void Test1_AsyncSuccessful()
         {
-            if (EmergencyBackend.supabase != null)
-                EmergencyBackend.supabase = null;
+            //if (EmergencyBackend.supabase != null)
+            //    EmergencyBackend.supabase = null;
 
-            EmergencyBackend.Init();
+            //EmergencyBackend.Init();
 
-            Assert.IsNotNull(EmergencyBackend.supabase);
+            //Assert.IsNotNull(EmergencyBackend.supabase);
             //var res = await EmergencyBackend.supabase.From<Testing>().Get();
             //var stuff = res.Models;
             //Assert.IsTrue(stuff.Count > 0);

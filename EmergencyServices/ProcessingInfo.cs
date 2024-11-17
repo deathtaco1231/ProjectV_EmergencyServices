@@ -1,9 +1,11 @@
 ﻿using Postgrest.Models;
 using Postgrest.Attributes;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in ticket 107
 {
+    [ExcludeFromCodeCoverage]
     [Table("disaster_emergency_data")]
     internal class ProcessingInfo : BaseModel
     {
@@ -25,6 +27,7 @@ namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in 
         [Column("recovery_steps")]
         public string RecoverySteps { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id + " "  + DisasterType + " " + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString() + '\n';

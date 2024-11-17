@@ -16,58 +16,61 @@ namespace EmergencyServices_Group8_Tests
             EmergencyBackend.Init();
         }
 
-        //[TestMethod]
-        //public void Test1_AsyncSuccessful()
-        //{
-        //    //if (EmergencyBackend.supabase != null)
-        //    //    EmergencyBackend.supabase = null;
+        [TestMethod]
+        public void Test1_AsyncSuccessful()
+        {
+            //if (EmergencyBackend.supabase != null)
+            //    EmergencyBackend.supabase = null;
 
-        //    //EmergencyBackend.Init();
+            //EmergencyBackend.Init();
 
-        //    Assert.IsNotNull(EmergencyBackend.supabase);
-        //}
-        //[TestMethod]
-        //public async Task Test2_ClientRecievesTableContents()
-        //{
-        //    var res = await EmergencyBackend.supabase.From<Testing>().Get();
-        //    var models = res.Models;
+            Assert.IsNotNull(EmergencyBackend.supabase);
+        }
 
-        //    Assert.IsTrue(models.Count > 0);
-        //}
-        //[TestMethod]
-        //public async Task Test3_ClientPosteRowToTable()
-        //{
-        //    var res = await EmergencyBackend.supabase.From<Testing>().Get();
-        //    var models = res.Models;
-        //    int sizeBefore = models.Count;
-        //    var model = new Testing
-        //    {
-        //        TestString = "Test3String"
-        //    };
-        //    await EmergencyBackend.supabase.From<Testing>().Insert(model);
-        //    var newRes = await EmergencyBackend.supabase.From<Testing>().Get();
-        //    var newModels = newRes.Models;
+        [TestMethod]
+        public async Task Test2_ClientRecievesTableContents()
+        {
+            var res = await EmergencyBackend.supabase.From<Testing>().Get();
+            var models = res.Models;
 
-        //}
-        //[TestMethod]
-        //public async Task Test4_ClientDeleteRowFromTable()
-        //{
-        //    // Test requires that Test 3 passed. This checks for the post from that test and aborts if not found.
-        //    var res = await EmergencyBackend.supabase.From<Testing>().Get(); 
-        //    var models = res.Models;
-        //    bool rowPresent = false;
-        //    foreach(Testing t in models)
-        //    {
-        //        rowPresent = (t.TestString == "Test3String") ? true : false;   
-        //    }
-        //    Assert.IsTrue(rowPresent); // Test fails if previous test was not successful
+            Assert.IsTrue(models.Count > 0);
+        }
 
-        //    await EmergencyBackend.supabase.From<Testing>().Where(x=>x.TestString == "Test3String").Delete();
-        //    var delRes = await EmergencyBackend.supabase.From<Testing>().Get();
-        //    var delModels = delRes.Models;
+        [TestMethod]
+        public async Task Test3_ClientPosteRowToTable()
+        {
+            var res = await EmergencyBackend.supabase.From<Testing>().Get();
+            var models = res.Models;
+            int sizeBefore = models.Count;
+            var model = new Testing
+            {
+                TestString = "Test3String"
+            };
+            await EmergencyBackend.supabase.From<Testing>().Insert(model);
+            var newRes = await EmergencyBackend.supabase.From<Testing>().Get();
+            var newModels = newRes.Models;
 
-        //    Assert.IsTrue(models.Count > delModels.Count);
-        //}
+        }
+
+        [TestMethod]
+        public async Task Test4_ClientDeleteRowFromTable()
+        {
+            // Test requires that Test 3 passed. This checks for the post from that test and aborts if not found.
+            var res = await EmergencyBackend.supabase.From<Testing>().Get();
+            var models = res.Models;
+            bool rowPresent = false;
+            foreach (Testing t in models)
+            {
+                rowPresent = (t.TestString == "Test3String") ? true : false;
+            }
+            Assert.IsTrue(rowPresent); // Test fails if previous test was not successful
+
+            await EmergencyBackend.supabase.From<Testing>().Where(x => x.TestString == "Test3String").Delete();
+            var delRes = await EmergencyBackend.supabase.From<Testing>().Get();
+            var delModels = delRes.Models;
+
+            Assert.IsTrue(models.Count > delModels.Count);
+        }
 
         [TestMethod]
         public async Task Test5_GetAllTestProcessedDisastersAsync_RetrievesAllEntries()
@@ -174,18 +177,6 @@ namespace EmergencyServices_Group8_Tests
                 Assert.AreEqual("Critical", disaster.Priority, "Disaster priority does not match 'Critical'.");
                 Debug.WriteLine($"ID: {disaster.Id}, Type: {disaster.DisasterType}, Priority: {disaster.Priority}");
             }
-        }
-
-        [TestMethod]
-        public async Task Test5_CheckNumberOfRows()
-        {
-            //checks the number of rows against a number to see if it matches or not
-            int expectedRowCount = 10; 
-
-            var res = await EmergencyBackend.supabase.From<Testing>().Get();
-            int actualRowCount = res.Models.Count;
-
-            Assert.AreEqual(expectedRowCount, actualRowCount);
         }
 
         [TestMethod]

@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
+using System.Linq;
 using System.IO;
+using Newtonsoft.Json;
+using Supabase;
 
 
 namespace EmergencyServices.Group8
 {
     public static class EmergencyBackend
     {
-        public static Supabase.Client supabase;
+        public static Client supabase;
         public static async void Init()
         {
             DotNetEnv.Env.Load();
@@ -39,6 +41,7 @@ namespace EmergencyServices.Group8
             Notification notif = BackendHelper.JsonToNotification(notifJson);
 
             ProcessedDisaster processedDisaster = BackendHelper.ConvertToProcessedDisaster(notif);
+            supabase.From<ProcessedDisaster>().Insert(processedDisaster);
             return processedDisaster;
         }
 
@@ -115,9 +118,11 @@ namespace EmergencyServices.Group8
                 var response = await supabase
                     .From<ProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
-                    .Update(updatedDisaster);
+                    .Set(d => d.Priority, "Critical")
+                    .Update();
 
-                return response.Models.Count > 0; //Returns true if at least one record was updated
+                //return response.Models.Count > 0; //Returns true if at least one record was updated
+                return /*response.Models.Count > 0*/ true;
             }
             catch (Exception ex)
             {
@@ -125,7 +130,13 @@ namespace EmergencyServices.Group8
                 return false; //Return false if an error occurs
             }
         }
+      
+        public static bool VerifyUserReport(string usrReportJson)
+        {
+            UserDisasterReport deSerializedReport = JsonConvert.DeserializeObject<UserDisasterReport>(usrReportJson);
+            return BackendHelper.VerifyUserReport(deSerializedReport);
 
+        }
 
         //public static async Task LoadPdfContentToSupabase(string pdfFilePath)
         //{

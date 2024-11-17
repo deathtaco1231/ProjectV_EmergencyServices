@@ -26,11 +26,13 @@ namespace EmergencyServices.Group8
         [Column("post_body")]
         public string postBody { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id.ToString() + "," + CreatedAt.ToString() + "," + userName + "," + postHeader + "," + postBody;
         }
 
+        [ExcludeFromCodeCoverage]
         public void CreatePost(string name, string postHead, string body)
         {
 

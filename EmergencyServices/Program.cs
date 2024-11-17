@@ -12,6 +12,7 @@ namespace EmergencyServices.Group8
     [ExcludeFromCodeCoverage]
     internal class Program // Likely will just be used for testing since all functionality will be in static class and methods and main will be in group 7's module
     {
+        [ExcludeFromCodeCoverage]
         static async Task Main(string[] args)
         {
             Console.WriteLine("Initalizing EmergencyBackend...");

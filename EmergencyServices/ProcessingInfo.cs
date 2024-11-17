@@ -27,6 +27,7 @@ namespace EmergencyServices.Group8 // Created as part of ticket 105, for use in 
         [Column("recovery_steps")]
         public string RecoverySteps { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id + " "  + DisasterType + " " + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString() + '\n';

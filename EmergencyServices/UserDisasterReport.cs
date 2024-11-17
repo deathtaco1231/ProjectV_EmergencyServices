@@ -10,6 +10,7 @@ namespace EmergencyServices.Group8
     [ExcludeFromCodeCoverage]
     internal class UserDisasterReport
     {
+        [ExcludeFromCodeCoverage]
         public UserDisasterReport() 
         { 
             location = new Location();

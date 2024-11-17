@@ -6,6 +6,7 @@
     [ExcludeFromCodeCoverage]
     public static class DotEnv // Backup class to load environment variables in case DotNetEnv does not work
     {
+        [ExcludeFromCodeCoverage]
         public static void Load(string filePath)
         {
             if (!File.Exists(filePath))

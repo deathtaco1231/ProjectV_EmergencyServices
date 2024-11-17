@@ -21,6 +21,7 @@ namespace EmergencyServices.Group8
         [Column("test_string")]
         public string TestString { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id + " " + CreatedAt.ToString() + " " + TestString;

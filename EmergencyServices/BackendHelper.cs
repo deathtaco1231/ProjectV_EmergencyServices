@@ -53,8 +53,9 @@ namespace EmergencyServices.Group8
             // Loop through each entry in DisasterProcessingInfo to find a match
             for (int i = 0; i < DisasterProcessingInfo.Count; i++)
             {
-                // Convert each ProcessingInfo disaster type to uppercase before comparison
-                if (DisasterProcessingInfo[i].DisasterType.ToUpper() == notificationDisasterType)
+                // Retrieve the disaster type from the database, convert it to uppercase, and compare
+                string databaseDisasterType = DisasterProcessingInfo[i].DisasterType.ToUpper();
+                if (databaseDisasterType == notificationDisasterType)
                 {
                     matchingInfo = DisasterProcessingInfo[i];
                     break;
@@ -71,7 +72,7 @@ namespace EmergencyServices.Group8
                 Source = notif.Source
             };
 
-            // Populate steps based on matching ProcessingInfo, or set to null if not found
+            // Populate steps based on matching ProcessingInfo, or set to default steps if not found
             if (matchingInfo != null)
             {
                 processedDisaster.PreparationSteps = matchingInfo.PrecautionSteps;
@@ -80,9 +81,10 @@ namespace EmergencyServices.Group8
             }
             else
             {
-                processedDisaster.PreparationSteps = null;
-                processedDisaster.ActiveSteps = null;
-                processedDisaster.RecoverySteps = null;
+                processedDisaster.PrecautionSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
+                processedDisaster.DuringDisasterSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
+                processedDisaster.RecoverySteps = "Lookout for instructions from officials and community leaders, inspect your area for damages, listen to your local radio or news channel for further instructions";
+
             }
 
             return processedDisaster;

@@ -20,14 +20,14 @@ namespace EmergencyServices.Group8
             Console.WriteLine("Initalizing Complete\n");
 
             Console.WriteLine("Retrieving all rows from testing table...\n");
-            var testDisasters = await EmergencyBackend.GetAllTestProcessedDisastersAsync();
+            var testDisasters = await BackendHelper.GetAllTestProcessedDisastersAsync();
             foreach (var c in testDisasters)
             {
                 Console.WriteLine(c.ToString());
             }
 
             Console.WriteLine("\nRetrieving rows from testing table with WARNING priority...\n");
-            var newTestDisasters = await EmergencyBackend.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Warning);
+            var newTestDisasters = await BackendHelper.GetTestDisastersByPriorityAsync(DisasterTypeEnums.Warning);
             foreach (var c in newTestDisasters)
             {
                 Console.WriteLine(c.ToString());

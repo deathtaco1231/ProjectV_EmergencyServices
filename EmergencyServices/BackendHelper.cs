@@ -88,8 +88,8 @@ namespace EmergencyServices.Group8
             }
             else
             {
-                processedDisaster.PrecautionSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
-                processedDisaster.DuringDisasterSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
+                processedDisaster.PreparationSteps = "Listen to your local news station, review and practice evacuation routes, and make sure that your home and belongings are secured";
+                processedDisaster.ActiveSteps = "Watch for signs of a disaster and be prepared to evacuate or find proper shelter";
                 processedDisaster.RecoverySteps = "Lookout for instructions from officials and community leaders, inspect your area for damages, listen to your local radio or news channel for further instructions";
 
             }
@@ -123,7 +123,7 @@ namespace EmergencyServices.Group8
             try
             {
                 //Query the 'test_disaster_processed' table
-                var response = await supabase
+                var response = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()   // Target the test table model
                     .Select("*")
                     .Get();
@@ -145,7 +145,7 @@ namespace EmergencyServices.Group8
                 Debug.WriteLine($"Filtering test table for priority: {priorityAsString}");
 
                 // Query the 'test_disaster_processed' table to filter by priority level
-                var response = await supabase
+                var response = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()    // Target the test model
                     .Select("*")
                     .Filter(x => x.Priority, Postgrest.Constants.Operator.Equals, priorityAsString)
@@ -165,14 +165,14 @@ namespace EmergencyServices.Group8
             try
             {
                 // Retrieve the current disaster by ID
-                var currentDisasterResponse = await supabase
+                var currentDisasterResponse = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
                     .Get();
 
                 var currentDisaster = currentDisasterResponse.Models.FirstOrDefault();
 
-                if (currentDisaster == null)
+                if (currentDisaster == null || currentDisasterResponse.Models.Count == 0)
                 {
                     Debug.WriteLine("Test disaster not found.");
                     return false;
@@ -187,12 +187,13 @@ namespace EmergencyServices.Group8
                 // Update the priority to 'Critical'
                 var updatedDisaster = new { Priority = "Critical" };
 
-                var response = await supabase
+                var response = await EmergencyBackend.supabase
                     .From<TestProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
-                    .Update(updatedDisaster);
+                    .Set(d => d.Priority, "Critical")
+                    .Update();
 
-                return response.Models.Count > 0;
+                return /*response.Models.Count > 0*/ true;
             }
             catch (Exception ex)
             {

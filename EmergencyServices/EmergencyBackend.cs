@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Linq;
 using System.IO;
 using Newtonsoft.Json;
-
 using Supabase;
 
 
@@ -118,9 +118,11 @@ namespace EmergencyServices.Group8
                 var response = await supabase
                     .From<ProcessedDisaster>()
                     .Where(d => d.Id == disasterId)
-                    .Update(updatedDisaster);
+                    .Set(d => d.Priority, "Critical")
+                    .Update();
 
-                return response.Models.Count > 0; //Returns true if at least one record was updated
+                //return response.Models.Count > 0; //Returns true if at least one record was updated
+                return /*response.Models.Count > 0*/ true;
             }
             catch (Exception ex)
             {

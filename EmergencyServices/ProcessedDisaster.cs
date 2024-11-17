@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace EmergencyServices.Group8
 {
     [ExcludeFromCodeCoverage]
-    [Table("testing")]
+    [Table("disaster_processed")]
     public class ProcessedDisaster : BaseModel
     {
         [PrimaryKey("id")]

@@ -41,6 +41,7 @@ namespace EmergencyServices.Group8
             Notification notif = BackendHelper.JsonToNotification(notifJson);
 
             ProcessedDisaster processedDisaster = BackendHelper.ConvertToProcessedDisaster(notif);
+            supabase.From<ProcessedDisaster>().Insert(processedDisaster);
             return processedDisaster;
         }
 
@@ -81,7 +82,6 @@ namespace EmergencyServices.Group8
                 return new List<TestProcessedDisaster>();
             }
         }
-
 
         public static async Task<List<ProcessedDisaster>> GetDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
         {

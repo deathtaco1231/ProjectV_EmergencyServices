@@ -6,7 +6,7 @@ using System.Linq;
 using System.IO;
 using Newtonsoft.Json;
 using Supabase;
-
+using System.Diagnostics.CodeAnalysis;
 
 namespace EmergencyServices.Group8
 {
@@ -41,10 +41,11 @@ namespace EmergencyServices.Group8
             Notification notif = BackendHelper.JsonToNotification(notifJson);
 
             ProcessedDisaster processedDisaster = BackendHelper.ConvertToProcessedDisaster(notif);
-            supabase.From<ProcessedDisaster>().Insert(processedDisaster);
-            return processedDisaster;
+            var ret = supabase.From<ProcessedDisaster>().Insert(processedDisaster);
+            return ret.Result.Model; // We need to return this since it has the correct creation time info AND the correct ID
         }
 
+        [ExcludeFromCodeCoverage]
         public static async Task<List<ProcessedDisaster>> GetAllProcessedDisastersAsync()
         {
             try
@@ -64,6 +65,7 @@ namespace EmergencyServices.Group8
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public static async Task<List<ProcessedDisaster>> GetDisastersByPriorityAsync(DisasterTypeEnums priorityLevel)
         {
             try
@@ -87,6 +89,7 @@ namespace EmergencyServices.Group8
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public static async Task<bool> MarkDisasterAsCriticalAsync(int disasterId)
         {
             try

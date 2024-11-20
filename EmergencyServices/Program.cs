@@ -105,6 +105,7 @@ namespace EmergencyServices.Group8
             Console.WriteLine("Verification of third disaster: " + EmergencyBackend.VerifyUserReport(thirdTestReportJson).ToString());
 
             Console.Read();
+
         }
     }
 }

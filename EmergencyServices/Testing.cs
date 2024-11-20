@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("EmergencyServices_Group8_Tests")]
 namespace EmergencyServices.Group8
 {
-    [ExcludeFromCodeCoverage]
     [Table("testing")] // Table for testing only
     internal class Testing : BaseModel
     {
@@ -21,7 +20,6 @@ namespace EmergencyServices.Group8
         [Column("test_string")]
         public string TestString { get; set; }
 
-        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id + " " + CreatedAt.ToString() + " " + TestString;

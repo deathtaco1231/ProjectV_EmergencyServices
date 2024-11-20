@@ -1,10 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using EmergencyServices.Group8;
-using System.Threading.Tasks;
+﻿using EmergencyServices.Group8;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 //public async Task Test1_AsyncSuccessful() When making a test that requires async
 //public void Test1_AsyncSuccessful() for any other test (except when specific type required)
 namespace EmergencyServices_Group8_Tests
@@ -21,11 +21,6 @@ namespace EmergencyServices_Group8_Tests
         [TestMethod]
         public void Test1_AsyncSuccessful()
         {
-            //if (EmergencyBackend.supabase != null)
-            //    EmergencyBackend.supabase = null;
-
-            //EmergencyBackend.Init();
-
             Assert.IsNotNull(EmergencyBackend.supabase);
         }
 
@@ -46,7 +41,7 @@ namespace EmergencyServices_Group8_Tests
             int sizeBefore = models.Count;
             var model = new Testing
             {
-                TestString = "Test3String"
+                TestString = "TestString"
             };
             await EmergencyBackend.supabase.From<Testing>().Insert(model);
             var newRes = await EmergencyBackend.supabase.From<Testing>().Get();
@@ -56,22 +51,30 @@ namespace EmergencyServices_Group8_Tests
 
         [TestMethod]
         public async Task Test4_ClientDeleteRowFromTable()
-        {
-            // Test requires that Test 3 passed. This checks for the post from that test and aborts if not found.
+        { 
             var res = await EmergencyBackend.supabase.From<Testing>().Get();
             var models = res.Models;
+            int originalCount = models.Count;
             bool rowPresent = false;
             foreach (Testing t in models)
             {
-                rowPresent = (t.TestString == "Test3String") ? true : false;
+                rowPresent = (t.TestString == "TestString") ? true : false;
             }
-            Assert.IsTrue(rowPresent); // Test fails if previous test was not successful
-
-            await EmergencyBackend.supabase.From<Testing>().Where(x => x.TestString == "Test3String").Delete();
+            if (!rowPresent)
+            {
+                var model = new Testing
+                {
+                    TestString = "TestString"
+                };
+                await EmergencyBackend.supabase.From<Testing>().Insert(model);
+                var tmpRes = await EmergencyBackend.supabase.From<Testing>().Get();
+                originalCount = tmpRes.Models.Count;
+            }
+            await EmergencyBackend.supabase.From<Testing>().Where(x => x.TestString == "TestString").Delete();
             var delRes = await EmergencyBackend.supabase.From<Testing>().Get();
-            var delModels = delRes.Models;
+            int newCount = delRes.Models.Count;
 
-            Assert.IsTrue(models.Count > delModels.Count);
+            Assert.IsTrue(originalCount > newCount);
         }
 
         [TestMethod]
@@ -298,6 +301,37 @@ namespace EmergencyServices_Group8_Tests
                     .Where(d => d.Id == disasterId)
                     .Delete();
             }
+        }
+
+        [TestMethod]
+        public async Task Test_ProcessNotifObject_DatabaseContainsRecord_ReturnsCorrectProcessedObject()
+        {
+            if (EmergencyBackend.supabase == null)
+            {
+                EmergencyBackend.Init();
+            }
+            var oldRes = await EmergencyBackend.supabase.From<ProcessedDisaster>().Get();
+            int oldCount = oldRes.Models.Count;
+            Notification notif = new Notification();
+            notif.Id = 999;
+            notif.Source ="NWS";
+            notif.Priority = "Warning";
+            notif.Timestamp = DateTime.Now;
+            notif.SeverityLevel = 11.5;
+            notif.DisasterType = "Flooding"; // This one is key to the test the rest is just filler stuff
+            notif.Description = "THIS IS A TEST";
+
+            string jsonNotif = JsonConvert.SerializeObject(notif);
+
+            ProcessedDisaster procObj = EmergencyBackend.ProcessNotification(jsonNotif);
+
+            Assert.IsNotNull(procObj);
+            Assert.IsTrue(procObj.DisasterType == notif.DisasterType);
+            var newRes = await EmergencyBackend.supabase.From<ProcessedDisaster>().Get();
+            int newCount = newRes.Models.Count;
+            Assert.IsTrue(newCount > oldCount);
+
+            await EmergencyBackend.supabase.From<ProcessedDisaster>().Where(x => x.Id == procObj.Id).Delete(); // Cleanup database table
         }
 
     }

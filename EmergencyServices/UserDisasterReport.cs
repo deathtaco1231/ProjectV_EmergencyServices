@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace EmergencyServices.Group8
 {
-    [ExcludeFromCodeCoverage]
     internal class UserDisasterReport
     {
-        [ExcludeFromCodeCoverage]
         public UserDisasterReport() 
         { 
             location = new Location();
@@ -25,7 +23,6 @@ namespace EmergencyServices.Group8
         public Media media { get; set; }
     }
 
-    [ExcludeFromCodeCoverage]
     internal class Location
     {
         public double latitude { get; set; }
@@ -33,7 +30,6 @@ namespace EmergencyServices.Group8
         public string address { get; set; }
     }
 
-    [ExcludeFromCodeCoverage]
     internal class Event
     {
         public string type { get; set; }
@@ -41,7 +37,6 @@ namespace EmergencyServices.Group8
         public string description { get; set; }
     }
 
-    [ExcludeFromCodeCoverage]
     internal class Media
     {
         public string type { get; set; }

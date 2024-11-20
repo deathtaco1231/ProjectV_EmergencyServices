@@ -39,6 +39,7 @@ namespace EmergencyServices.Group8
         [Column("notif_source")]
         public string Source { get; set; }  // NWS or Emergency Services
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id + " " + DisasterType + " " + Priority + " " + Description + " " + PreparationSteps + " " + ActiveSteps + " " + RecoverySteps + " " + Timestamp.ToString() + " " + SeverityLevel + " " + Source + '\n';

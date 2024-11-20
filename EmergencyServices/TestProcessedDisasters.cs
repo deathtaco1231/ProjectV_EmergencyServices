@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace EmergencyServices.Group8
 {
-    [ExcludeFromCodeCoverage]
     [Table("test_disaster_processed")] //Target the test table
     public class TestProcessedDisaster : BaseModel
     {
@@ -39,7 +38,6 @@ namespace EmergencyServices.Group8
         [Column("notif_source")]
         public string Source { get; set; }  // NWS or Emergency Services
 
-        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Id + " " + DisasterType.ToString() + " " + Priority + " " + Description + " " + PrecautionSteps + " " + DuringDisasterSteps + " " + RecoverySteps + " " + Timestamp.ToString();

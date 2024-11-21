@@ -35,7 +35,6 @@ namespace EmergencyServices.Group8
 
             Console.WriteLine("\nCreating Standard Notification...\n");
             Notification notifObj = new Notification();
-            notifObj.Id = 1;
             notifObj.Source ="NWS";
             notifObj.Priority = "Warning";
             notifObj.Timestamp = DateTime.Now;
@@ -76,7 +75,7 @@ namespace EmergencyServices.Group8
             int res = compare.CompareTo(test); // returns 1 no matter what, indicating that the object passed in holds date/time before the caller
             int res2 = test.CompareTo(compare); // returns -1 no matter what, indicating that the object passed in holds date/time after the caller
 
-            //Console.WriteLine((ulong)test.ToBinary());
+            Console.WriteLine((ulong)test.ToBinary() + " Example of binary time");
 
             DateTime day1 = DateTime.MinValue;
             DateTime day2 = DateTime.MinValue;
@@ -103,6 +102,17 @@ namespace EmergencyServices.Group8
             Console.WriteLine("Verification of first disaster: " + EmergencyBackend.VerifyUserReport(firstTestReportJson).ToString());
             Console.WriteLine("Verification of second disaster: " + EmergencyBackend.VerifyUserReport(secondTestReportJson).ToString());
             Console.WriteLine("Verification of third disaster: " + EmergencyBackend.VerifyUserReport(thirdTestReportJson).ToString());
+
+            Console.WriteLine("Making procObj critical:");
+            Console.WriteLine("Previous priority: " + procObj.Priority.ToString());
+
+            if (await EmergencyBackend.MarkDisasterAsCriticalAsync(procObj.Id)==true)
+                procObj.Priority = "Critical";
+
+            Console.WriteLine("New priority: " + procObj.Priority.ToString());
+
+            Console.WriteLine("Making procObj critical with previous priority set to urgent");
+
 
             Console.Read();
 

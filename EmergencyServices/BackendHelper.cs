@@ -80,7 +80,7 @@ namespace EmergencyServices.Group8
             }
         }
 
-        public static string ProcessedDisasterToJson(ProcessedDisaster p)
+        public static string ProcessedDisasterToJson(ProcessedDisaster p) // UNUSED NOW
         {
             return JsonConvert.SerializeObject(p);
         }

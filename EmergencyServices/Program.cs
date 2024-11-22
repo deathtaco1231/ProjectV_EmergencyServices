@@ -52,6 +52,8 @@ namespace EmergencyServices.Group8
 
             Console.WriteLine("\nProcessing into ProcessedDisaster...\n");
             ProcessedDisaster procObj = EmergencyBackend.ProcessNotification(jsonNotif);
+            string testJson = JsonConvert.SerializeObject(procObj);
+            Console.WriteLine("\nTest Json of raw processed disaster:\n" + testJson + "\n");
             Console.WriteLine(procObj.ToString());
 
             string jsonProc = await EmergencyBackend.GetNewNotifFormatProcessedDisasterJson(procObj.Id);

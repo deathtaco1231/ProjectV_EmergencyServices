@@ -124,8 +124,9 @@ namespace EmergencyServices.Group8
                     .Set(d => d.Priority, "Critical")
                     .Update();
 
-                //return response.Models.Count > 0; //Returns true if at least one record was updated
-                return /*response.Models.Count > 0*/ true;
+                //Returns true if at least one record was updated
+                
+                return true;
             }
             catch (Exception ex)
             {
@@ -133,13 +134,50 @@ namespace EmergencyServices.Group8
                 return false; //Return false if an error occurs
             }
         }
-      
+
+        public static async Task<string> GetNewNotifFormatProcessedDisasterJson(int id)
+        {
+            var currentDisasterResponse = await supabase
+                    .From<ProcessedDisaster>()
+                    .Where(d => d.Id == id)
+                    .Get();
+
+            ProcessedDisaster currentDisaster = currentDisasterResponse.Models.FirstOrDefault();
+            return BackendHelper.GetProcessedDisasterJsonInNewNotifFormat(currentDisaster);
+        }
+
         public static bool VerifyUserReport(string usrReportJson)
         {
             UserDisasterReport deSerializedReport = JsonConvert.DeserializeObject<UserDisasterReport>(usrReportJson);
             return BackendHelper.VerifyUserReport(deSerializedReport);
 
         }
+
+        public static void AddNewSurvivor(Survivor_Information survivor) // Based on method found in G7 survior information service which accepted a survivor information object when adding to list
+        {
+            if (survivor != null)
+                supabase.From<Survivor_Information>().Insert(survivor);
+        }
+
+        public static async Task<List<Survivor_Information>> GetSurvivors() // Name does not follow similar methods defined here (like getting disasters) because G7 already has method with same functionality as here that we want to integrate more easily, so we are keeping this name (for now)
+        {
+            try
+            {
+                //Query the 'disaster_processed' table
+                var response = await supabase
+                    .From<Survivor_Information>()   //Target the production table model
+                    .Select("*")
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving processed disasters from disaster_processed table: {ex.Message}");
+                return new List<Survivor_Information>();
+            }
+        }
+
 
         //public static async Task LoadPdfContentToSupabase(string pdfFilePath)
         //{

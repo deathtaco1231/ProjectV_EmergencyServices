@@ -273,8 +273,8 @@
     <Compile Include="DisasterTypeEnums.cs" />
     <Compile Include="DotEnv.cs" />
     <Compile Include="EmergencyBackend.cs" />
-    <Compile Include="ForumPost.cs" />
-    <Compile Include="NotifiedUser.cs" />
+    <Compile Include="NewNotificationFormat.cs" />
+    <Compile Include="Survivor.cs" />
     <Compile Include="ProcessedDisaster.cs" />
     <Compile Include="ProcessingInfo.cs" />
     <Compile Include="Program.cs" />

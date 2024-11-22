@@ -34,13 +34,15 @@ namespace EmergencyServices.Group8
             }
 
             Console.WriteLine("\nCreating Standard Notification...\n");
-            Notification notifObj = new Notification();
-            notifObj.Source ="NWS";
-            notifObj.Priority = "Warning";
-            notifObj.Timestamp = DateTime.Now;
-            notifObj.SeverityLevel = 11.5;
-            notifObj.DisasterType = "Flooding";
-            notifObj.Description = "Lots of water because its a flood";
+            NewNotificationFormat notifObj = new NewNotificationFormat();
+            notifObj.notiforigin ="NWS";
+            notifObj.disasterlevel = 2;
+            notifObj.notifdate = DateTime.Now.ToString();
+            notifObj.city = "Toronto";
+            notifObj.disastertype = "Flooding";
+            notifObj.latitude = 1.445f;
+            notifObj.longitude = 2.937f;
+            notifObj.id = 5;
 
             Console.WriteLine(notifObj.ToString());
 
@@ -52,22 +54,24 @@ namespace EmergencyServices.Group8
             ProcessedDisaster procObj = EmergencyBackend.ProcessNotification(jsonNotif);
             Console.WriteLine(procObj.ToString());
 
-            string jsonProc = JsonConvert.SerializeObject(procObj);
+            string jsonProc = await EmergencyBackend.GetNewNotifFormatProcessedDisasterJson(procObj.Id);
+            Console.WriteLine("\nProcessed Version JSON: \n");
+            Console.WriteLine(jsonProc);
 
             // TESTING NESTED JSON
-            UserDisasterReport userDisasterReport = new UserDisasterReport();
-            userDisasterReport.report_id = 1;
-            userDisasterReport.user_id = 12;
-            userDisasterReport.location.latitude = 15.5;
-            userDisasterReport.location.address = "lol";
-            userDisasterReport.@event.type = "flood";
-            userDisasterReport.@event.severity = "bad as hellll";
-            userDisasterReport.media.type = "video";
-            userDisasterReport.media.description = "description of media here";
+            //UserDisasterReport userDisasterReport = new UserDisasterReport();
+            //userDisasterReport.report_id = 1;
+            //userDisasterReport.user_id = 12;
+            //userDisasterReport.location.latitude = 15.5;
+            //userDisasterReport.location.address = "lol";
+            //userDisasterReport.@event.type = "flood";
+            //userDisasterReport.@event.severity = "bad as hellll";
+            //userDisasterReport.media.type = "video";
+            //userDisasterReport.media.description = "description of media here";
 
-            string usrReportJson = JsonConvert.SerializeObject(userDisasterReport);
+            //string usrReportJson = JsonConvert.SerializeObject(userDisasterReport);
 
-            UserDisasterReport deSerializedReport = JsonConvert.DeserializeObject<UserDisasterReport>(usrReportJson);
+            //UserDisasterReport deSerializedReport = JsonConvert.DeserializeObject<UserDisasterReport>(usrReportJson);
 
             DateTime test = DateTime.Now;
             //Thread.Sleep(1700);
@@ -82,26 +86,26 @@ namespace EmergencyServices.Group8
             day1 = day1.AddDays(1);
             ulong oneDayBinary = (ulong)day1.ToBinary();
             
-            UserDisasterReport firstTestReport = new UserDisasterReport();
-            firstTestReport.@event.type = "flooding";
-            firstTestReport.user_id = 23;
-            firstTestReport.created_at = DateTime.Now;
-            UserDisasterReport secondTestReport = new UserDisasterReport();
-            secondTestReport.@event.type = "OtherType";
-            secondTestReport.user_id = 23;
-            secondTestReport.created_at = DateTime.Now.AddMinutes(1);
-            UserDisasterReport thirdTestReport = new UserDisasterReport();
-            thirdTestReport.@event.type = "Flooding";
-            thirdTestReport.user_id = 25;
-            thirdTestReport.created_at = DateTime.Now.AddMinutes(1);
+            //UserDisasterReport firstTestReport = new UserDisasterReport();
+            //firstTestReport.@event.type = "flooding";
+            //firstTestReport.user_id = 23;
+            //firstTestReport.created_at = DateTime.Now;
+            //UserDisasterReport secondTestReport = new UserDisasterReport();
+            //secondTestReport.@event.type = "OtherType";
+            //secondTestReport.user_id = 23;
+            //secondTestReport.created_at = DateTime.Now.AddMinutes(1);
+            //UserDisasterReport thirdTestReport = new UserDisasterReport();
+            //thirdTestReport.@event.type = "Flooding";
+            //thirdTestReport.user_id = 25;
+            //thirdTestReport.created_at = DateTime.Now.AddMinutes(1);
 
-            string firstTestReportJson = JsonConvert.SerializeObject(firstTestReport);
-            string secondTestReportJson = JsonConvert.SerializeObject(secondTestReport);
-            string thirdTestReportJson = JsonConvert.SerializeObject(thirdTestReport);
+            //string firstTestReportJson = JsonConvert.SerializeObject(firstTestReport);
+            //string secondTestReportJson = JsonConvert.SerializeObject(secondTestReport);
+            //string thirdTestReportJson = JsonConvert.SerializeObject(thirdTestReport);
 
-            Console.WriteLine("Verification of first disaster: " + EmergencyBackend.VerifyUserReport(firstTestReportJson).ToString());
-            Console.WriteLine("Verification of second disaster: " + EmergencyBackend.VerifyUserReport(secondTestReportJson).ToString());
-            Console.WriteLine("Verification of third disaster: " + EmergencyBackend.VerifyUserReport(thirdTestReportJson).ToString());
+            //Console.WriteLine("Verification of first disaster: " + EmergencyBackend.VerifyUserReport(firstTestReportJson).ToString());
+            //Console.WriteLine("Verification of second disaster: " + EmergencyBackend.VerifyUserReport(secondTestReportJson).ToString());
+            //Console.WriteLine("Verification of third disaster: " + EmergencyBackend.VerifyUserReport(thirdTestReportJson).ToString());
 
             Console.WriteLine("Making procObj critical:");
             Console.WriteLine("Previous priority: " + procObj.Priority.ToString());

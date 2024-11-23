@@ -312,21 +312,23 @@ namespace EmergencyServices_Group8_Tests
             }
             var oldRes = await EmergencyBackend.supabase.From<ProcessedDisaster>().Get();
             int oldCount = oldRes.Models.Count;
-            Notification notif = new Notification();
-            notif.Id = 999;
-            notif.Source ="NWS";
-            notif.Priority = "Warning";
-            notif.Timestamp = DateTime.Now;
-            notif.SeverityLevel = 11.5;
-            notif.DisasterType = "Flooding"; // This one is key to the test the rest is just filler stuff
-            notif.Description = "THIS IS A TEST";
+            NewNotificationFormat notif = new NewNotificationFormat();
+            notif.id = 999;
+            notif.notiforigin = "NWS";
+
+            notif.disasterlevel = 2;
+            notif.notifdate = DateTime.Now.ToString();
+            notif.disastertype = "flooding"; // Key field here others are mostly just filler
+            notif.city = "Waterloo";
+            notif.latitude = 0; // NEWLY ADDED
+            notif.longitude = 0; // NEWLY ADDED
 
             string jsonNotif = JsonConvert.SerializeObject(notif);
 
             ProcessedDisaster procObj = EmergencyBackend.ProcessNotification(jsonNotif);
 
             Assert.IsNotNull(procObj);
-            Assert.IsTrue(procObj.DisasterType == notif.DisasterType);
+            Assert.IsTrue(procObj.DisasterType == notif.disastertype);
             var newRes = await EmergencyBackend.supabase.From<ProcessedDisaster>().Get();
             int newCount = newRes.Models.Count;
             Assert.IsTrue(newCount > oldCount);

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace EmergencyServices
+namespace EmergencyServices.Group8
 {
     internal class NewNotificationFormat // NEW NOTIFICATION STRUCTURE WE JUST FOUND OUT ABOUT LOLZ
     {
